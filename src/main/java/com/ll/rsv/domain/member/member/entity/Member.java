@@ -50,4 +50,8 @@ public class Member extends BaseTime {
 
         return authorities;
     }
+
+    public String getName() {
+        return username;
+    }
 }

@@ -8,7 +8,7 @@ import org.springframework.lang.NonNull;
 
 import static lombok.AccessLevel.PRIVATE;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PRIVATE)
 @Getter
 public class RsData<T> {
