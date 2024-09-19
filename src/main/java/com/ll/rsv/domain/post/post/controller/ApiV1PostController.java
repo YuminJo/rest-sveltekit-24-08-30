@@ -6,6 +6,7 @@ import com.ll.rsv.domain.post.post.service.PostService;
 import com.ll.rsv.global.rsData.RsData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ public class ApiV1PostController {
 
     @Getter
     public static class GetPostsResponseBody {
+        @NonNull
         private List<PostDto> items;
 
         public GetPostsResponseBody(List<Post> items) {
