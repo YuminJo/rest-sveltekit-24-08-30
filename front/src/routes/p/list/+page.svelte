@@ -1,10 +1,13 @@
 <script lang="ts">
-	import type { components } from '$lib/types/api/v1/schema';
+	import createClient from 'openapi-fetch';
+	import type { paths } from '$lib/types/api/v1/schema';
+
+	const { GET } = createClient<paths>({ baseUrl: 'http://localhost:8090/' });
 
 	async function load() {
-		return (await fetch('http://localhost:8090/api/v1/posts').then((res) =>
-			res.json()
-		)) as components['schemas']['RsDataGetPostsResponseBody'];
+		const { data } = await GET('/api/v1/posts', {});
+
+		return data!;
 	}
 </script>
 
