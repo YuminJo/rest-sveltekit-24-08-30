@@ -1,11 +1,8 @@
 <script lang="ts">
-	import createClient from 'openapi-fetch';
-	import type { paths } from '$lib/types/api/v1/schema';
-
-	const { GET } = createClient<paths>({ baseUrl: import.meta.env.VITE_API_URL });
+	import rq from '$lib/rq/rq.svelte';
 
 	async function load() {
-		const { data } = await GET('/api/v1/posts', {});
+		const { data } = await rq.apiEndPoints().GET('/api/v1/posts', {});
 
 		return data!;
 	}
