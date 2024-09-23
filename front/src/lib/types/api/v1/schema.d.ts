@@ -40,6 +40,16 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        Empty: Record<string, never>;
+        RsDataEmpty: {
+            resultCode: string;
+            /** Format: int32 */
+            statusCode: number;
+            msg: string;
+            data: components["schemas"]["Empty"];
+            success: boolean;
+            fail: boolean;
+        };
         GetPostsResponseBody: {
             items: components["schemas"]["PostDto"][];
         };
@@ -62,8 +72,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["GetPostsResponseBody"];
-            fail: boolean;
             success: boolean;
+            fail: boolean;
         };
         GetPostResponseBody: {
             item: components["schemas"]["PostDto"];
@@ -74,8 +84,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["GetPostResponseBody"];
-            fail: boolean;
             success: boolean;
+            fail: boolean;
         };
     };
     responses: never;
@@ -104,6 +114,15 @@ export interface operations {
                     "*/*": components["schemas"]["RsDataGetPostsResponseBody"];
                 };
             };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataEmpty"];
+                };
+            };
         };
     };
     getPost: {
@@ -124,6 +143,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["RsDataGetPostResponseBody"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataEmpty"];
                 };
             };
         };

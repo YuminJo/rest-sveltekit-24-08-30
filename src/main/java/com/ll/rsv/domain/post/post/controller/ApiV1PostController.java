@@ -55,7 +55,7 @@ public class ApiV1PostController {
     public RsData<GetPostResponseBody> getPost(
             @PathVariable long id
     ) {
-        Post post = postService.findById(id).orElseThrow(() -> new GlobalException("404-1", "존재하지 않는 글입니다."));
+        Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
         return RsData.of(
                 "200-1",
                 "성공",
