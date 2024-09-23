@@ -3,11 +3,14 @@ package com.ll.rsv.domain.post.post.controller;
 import com.ll.rsv.domain.post.post.dto.PostDto;
 import com.ll.rsv.domain.post.post.entity.Post;
 import com.ll.rsv.domain.post.post.service.PostService;
+import com.ll.rsv.global.exceptions.GlobalException;
 import com.ll.rsv.global.rsData.RsData;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,6 +42,24 @@ public class ApiV1PostController {
                 "200-1",
                 "성공",
                 new GetPostsResponseBody(items)
+        );
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class GetPostResponseBody {
+        @NonNull
+        private PostDto item;
+    }
+    @GetMapping("/{id}")
+    public RsData<GetPostResponseBody> getPost(
+            @PathVariable long id
+    ) {
+        Post post = postService.findById(id).orElseThrow(() -> new GlobalException("404-1", "존재하지 않는 글입니다."));
+        return RsData.of(
+                "200-1",
+                "성공",
+                new GetPostResponseBody(new PostDto(post))
         );
     }
 }

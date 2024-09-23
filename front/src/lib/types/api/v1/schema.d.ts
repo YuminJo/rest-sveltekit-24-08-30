@@ -20,6 +20,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/posts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPost"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -46,8 +62,20 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["GetPostsResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
+        };
+        GetPostResponseBody: {
+            item: components["schemas"]["PostDto"];
+        };
+        RsDataGetPostResponseBody: {
+            resultCode: string;
+            /** Format: int32 */
+            statusCode: number;
+            msg: string;
+            data: components["schemas"]["GetPostResponseBody"];
+            fail: boolean;
+            success: boolean;
         };
     };
     responses: never;
@@ -74,6 +102,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["RsDataGetPostsResponseBody"];
+                };
+            };
+        };
+    };
+    getPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataGetPostResponseBody"];
                 };
             };
         };

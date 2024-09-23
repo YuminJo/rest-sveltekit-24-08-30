@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,5 +30,9 @@ public class PostService {
 
     public List<Post> findByPublished(boolean published) {
         return postRepository.findByPublishedOrderByIdDesc(published);
+    }
+
+    public Optional<Post> findById(long id) {
+        return postRepository.findById(id);
     }
 }
