@@ -5,14 +5,11 @@ import com.ll.rsv.domain.post.post.entity.Post;
 import com.ll.rsv.domain.post.post.service.PostService;
 import com.ll.rsv.global.exceptions.GlobalException;
 import com.ll.rsv.global.rsData.RsData;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,16 +19,8 @@ import java.util.List;
 public class ApiV1PostController {
     private final PostService postService;
 
-    @Getter
-    public static class GetPostsResponseBody {
-        @NonNull
-        private List<PostDto> items;
 
-        public GetPostsResponseBody(List<Post> items) {
-            this.items = items.stream()
-                    .map(PostDto::new)
-                    .toList();
-        }
+    public record GetPostsResponseBody(@NonNull List<PostDto> items) {
     }
 
     @GetMapping("")
@@ -39,27 +28,55 @@ public class ApiV1PostController {
         List<Post> items = postService.findByPublished(true);
 
         return RsData.of(
-                "200-1",
-                "성공",
-                new GetPostsResponseBody(items)
+                new GetPostsResponseBody(
+                        items.stream()
+                                .map(PostDto::new)
+                                .toList()
+                )
         );
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class GetPostResponseBody {
-        @NonNull
-        private PostDto item;
+
+    // 위에 2줄을 띄워서 각 요청별 코드를 보기쉽게 나눠줌, 단건 조회 시작
+    // 레코드 도입하여 요청Body 클래스 단순화
+    public record GetPostResponseBody(@NonNull PostDto item) {
     }
+
     @GetMapping("/{id}")
     public RsData<GetPostResponseBody> getPost(
             @PathVariable long id
     ) {
         Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
+
         return RsData.of(
-                "200-1",
-                "성공",
                 new GetPostResponseBody(new PostDto(post))
         );
     }
+    // 아래에 2줄을 띄워서 각 요청별 코드를 보기쉽게 나눠줌, 단건 조회 끝
+
+
+    // 위에 2줄을 띄워서 각 요청별 코드를 보기쉽게 나눠줌, 글 수정 시작
+    // 레코드 도입하여 요청Body 클래스 단순화
+    public record EditRequestBody(@NotBlank String title, @NotBlank String body) {
+    }
+
+    // 레코드 도입하여 응답Body 클래스 단순화
+    public record EditResponseBody(@NonNull PostDto item) {
+    }
+
+    @PutMapping(value = "/{id}")
+    public RsData<EditResponseBody> edit(
+            @PathVariable long id,
+            @Valid @RequestBody EditRequestBody requestBody
+    ) {
+        Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        postService.edit(post, requestBody.title, requestBody.body);
+
+        // public static <T> RsData<T> of(T data) { ... } 를 RsData 에 추가한 덕분에 아래와 같이 깔끔하게 변경됨
+        return RsData.of(
+                new EditResponseBody(new PostDto(post))
+        );
+    }
+    // 아래에 2줄을 띄워서 각 요청별 코드를 보기쉽게 나눠줌, 글 수정 끝
 }

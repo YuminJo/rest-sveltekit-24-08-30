@@ -4,22 +4,6 @@
  */
 
 export interface paths {
-    "/api/v1/posts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getPosts"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/posts/{id}": {
         parameters: {
             query?: never;
@@ -28,6 +12,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["getPost"];
+        put: operations["edit"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPosts"];
         put?: never;
         post?: never;
         delete?: never;
@@ -50,8 +50,12 @@ export interface components {
             success: boolean;
             fail: boolean;
         };
-        GetPostsResponseBody: {
-            items: components["schemas"]["PostDto"][];
+        EditRequestBody: {
+            title: string;
+            body: string;
+        };
+        EditResponseBody: {
+            item: components["schemas"]["PostDto"];
         };
         PostDto: {
             /** Format: int64 */
@@ -65,6 +69,18 @@ export interface components {
             authorName: string;
             title: string;
             body: string;
+        };
+        RsDataEditResponseBody: {
+            resultCode: string;
+            /** Format: int32 */
+            statusCode: number;
+            msg: string;
+            data: components["schemas"]["EditResponseBody"];
+            success: boolean;
+            fail: boolean;
+        };
+        GetPostsResponseBody: {
+            items: components["schemas"]["PostDto"][];
         };
         RsDataGetPostsResponseBody: {
             resultCode: string;
@@ -96,35 +112,6 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getPosts: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["RsDataGetPostsResponseBody"];
-                };
-            };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
-                };
-            };
-        };
-    };
     getPost: {
         parameters: {
             query?: never;
@@ -143,6 +130,70 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["RsDataGetPostResponseBody"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataEmpty"];
+                };
+            };
+        };
+    };
+    edit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditRequestBody"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataEditResponseBody"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataEmpty"];
+                };
+            };
+        };
+    };
+    getPosts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataGetPostsResponseBody"];
                 };
             };
             /** @description Internal Server Error */

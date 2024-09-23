@@ -35,4 +35,10 @@ public class PostService {
     public Optional<Post> findById(long id) {
         return postRepository.findById(id);
     }
+
+    @Transactional
+    public void edit(Post post, String title, String body) {
+        post.setTitle(title);
+        post.setBody(body);
+    }
 }
