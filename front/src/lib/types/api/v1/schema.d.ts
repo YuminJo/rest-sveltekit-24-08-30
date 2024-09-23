@@ -53,6 +53,7 @@ export interface components {
         EditRequestBody: {
             title: string;
             body: string;
+            published: boolean;
         };
         EditResponseBody: {
             item: components["schemas"]["PostDto"];
@@ -69,6 +70,7 @@ export interface components {
             authorName: string;
             title: string;
             body: string;
+            published?: boolean;
         };
         RsDataEditResponseBody: {
             resultCode: string;

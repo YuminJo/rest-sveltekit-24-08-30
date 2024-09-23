@@ -37,8 +37,9 @@ public class PostService {
     }
 
     @Transactional
-    public void edit(Post post, String title, String body) {
+    public void edit(Post post, String title, String body, boolean published) {
         post.setTitle(title);
         post.setBody(body);
+        post.setPublished(published);
     }
 }

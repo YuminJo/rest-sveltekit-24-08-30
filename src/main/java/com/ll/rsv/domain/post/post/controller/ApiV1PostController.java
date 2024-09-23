@@ -7,6 +7,7 @@ import com.ll.rsv.global.exceptions.GlobalException;
 import com.ll.rsv.global.rsData.RsData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +58,7 @@ public class ApiV1PostController {
 
     // 위에 2줄을 띄워서 각 요청별 코드를 보기쉽게 나눠줌, 글 수정 시작
     // 레코드 도입하여 요청Body 클래스 단순화
-    public record EditRequestBody(@NotBlank String title, @NotBlank String body) {
+    public record EditRequestBody(@NotBlank String title, @NotBlank String body, @NotNull boolean published) {
     }
 
     // 레코드 도입하여 응답Body 클래스 단순화
@@ -71,7 +72,7 @@ public class ApiV1PostController {
     ) {
         Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
 
-        postService.edit(post, requestBody.title, requestBody.body);
+        postService.edit(post, requestBody.title, requestBody.body, requestBody.published);
 
         // public static <T> RsData<T> of(T data) { ... } 를 RsData 에 추가한 덕분에 아래와 같이 깔끔하게 변경됨
         return RsData.of(

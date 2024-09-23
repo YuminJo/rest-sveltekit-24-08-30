@@ -1,6 +1,7 @@
 package com.ll.rsv.domain.post.post.dto;
 
 import com.ll.rsv.domain.post.post.entity.Post;
+import jakarta.annotation.Nonnull;
 import lombok.Getter;
 import org.springframework.lang.NonNull;
 
@@ -22,6 +23,8 @@ public class PostDto {
     private String title;
     @NonNull
     private String body;
+    @Nonnull
+    private boolean published;
 
     public PostDto(Post post) {
         this.id = post.getId();
@@ -31,5 +34,6 @@ public class PostDto {
         this.authorName = post.getAuthor().getName();
         this.title = post.getTitle();
         this.body = post.getBody();
+        this.published = post.isPublished();
     }
 }
