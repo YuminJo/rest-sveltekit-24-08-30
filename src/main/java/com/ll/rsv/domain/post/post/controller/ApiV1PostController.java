@@ -75,6 +75,7 @@ public class ApiV1PostController {
 
         // public static <T> RsData<T> of(T data) { ... } 를 RsData 에 추가한 덕분에 아래와 같이 깔끔하게 변경됨
         return RsData.of(
+                "%d번 글이 수정되었습니다.".formatted(id),
                 new EditResponseBody(new PostDto(post))
         );
     }

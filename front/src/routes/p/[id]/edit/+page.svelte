@@ -38,6 +38,8 @@
 			params: { path: { id: parseInt($page.params.id) } },
 			body: { title, body }
 		});
+
+		rq.msgAndRedirect(data, error, '/p/' + $page.params.id);
 	}
 </script>
 
