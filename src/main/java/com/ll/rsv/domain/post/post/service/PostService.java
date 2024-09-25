@@ -59,4 +59,11 @@ public class PostService {
 
         return actor.equals(post.getAuthor()); // 무조건 본인만 가능
     }
+
+    public Boolean canDelete(Member actor, Post post) {
+        if (actor == null) return false;
+        if (post == null) return false;
+        if (actor.isAdmin()) return true; // 관리자이면 가능
+        return actor.equals(post.getAuthor()); // 본인이면 가능
+    }
 }

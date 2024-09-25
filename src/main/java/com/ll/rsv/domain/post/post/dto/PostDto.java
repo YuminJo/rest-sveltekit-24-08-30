@@ -3,6 +3,7 @@ package com.ll.rsv.domain.post.post.dto;
 import com.ll.rsv.domain.post.post.entity.Post;
 import jakarta.annotation.Nonnull;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,13 @@ public class PostDto {
     private String body;
     @Nonnull
     private boolean published;
+
+    @Setter
+    private Boolean actorCanRead;
+    @Setter
+    private Boolean actorCanEdit;
+    @Setter
+    private Boolean actorCanDelete;
 
     public PostDto(Post post) {
         this.id = post.getId();

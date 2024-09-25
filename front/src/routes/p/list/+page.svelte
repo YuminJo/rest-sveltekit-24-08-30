@@ -16,6 +16,13 @@
 		{#each posts as post}
 			<li>
 				<a href="/p/{post.id}">{post.title}</a>
+
+				{#if post.actorCanDelete}
+					<button>삭제</button>
+				{/if}
+				{#if post.actorCanEdit}
+					<a href="/p/{post.id}/edit">수정</a>
+				{/if}
 			</li>
 		{/each}
 	</ul>

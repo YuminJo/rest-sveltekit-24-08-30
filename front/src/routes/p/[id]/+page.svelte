@@ -19,6 +19,14 @@
 {:then { data: { item: post } }}
 	<h1>{post.title}</h1>
 	<div class="whitespace-pre-line">{post.body}</div>
+	<div>
+		{#if post.actorCanDelete}
+			<button>삭제</button>
+		{/if}
+		{#if post.actorCanEdit}
+			<a href="/p/{post.id}/edit">수정</a>
+		{/if}
+	</div>
 {:catch error}
 	<!-- .msg 로 접근할 수 있는 이유는 스프링부트의 에러관련 출력을 커스터마이징 했기 때문 -->
 	{error.msg}

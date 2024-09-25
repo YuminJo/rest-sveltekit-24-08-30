@@ -29,12 +29,19 @@ public class ApiV1PostController {
     @GetMapping("")
     public RsData<GetPostsResponseBody> getPosts() {
         List<Post> items = postService.findByPublished(true);
+        List<PostDto> _items = items.stream()
+                .map(post -> {
+                    PostDto postDto = new PostDto(post);
+                    postDto.setActorCanRead(postService.canRead(rq.getMember(), post));
+                    postDto.setActorCanEdit(postService.canEdit(rq.getMember(), post));
+                    postDto.setActorCanDelete(postService.canDelete(rq.getMember(), post));
+                    return postDto;
+                })
+                .toList();
 
         return RsData.of(
                 new GetPostsResponseBody(
-                        items.stream()
-                                .map(PostDto::new)
-                                .toList()
+                        _items
                 )
         );
     }
