@@ -16,7 +16,7 @@ public class AppConfig {
 
     @Value("${custom.jwt.secretKey}")
     public void setJwtSecretKey(String jwtSecretKey) {
-        AppConfig.jwtSecretKey = jwtSecretKey;
+        this.jwtSecretKey = jwtSecretKey;
     }
 
     @Getter
@@ -24,7 +24,7 @@ public class AppConfig {
 
     @Value("${custom.accessToken.expirationSec}")
     public void setJwtSecretKey(long accessTokenExpirationSec) {
-        AppConfig.accessTokenExpirationSec = accessTokenExpirationSec;
+        this.accessTokenExpirationSec = accessTokenExpirationSec;
     }
 
     @Getter
@@ -32,7 +32,7 @@ public class AppConfig {
 
     @Value("${custom.site.frontUrl}")
     public void setSiteFrontUrl(String siteFrontUrl) {
-        AppConfig.siteFrontUrl = siteFrontUrl;
+        this.siteFrontUrl = siteFrontUrl;
     }
 
     @Getter
@@ -40,7 +40,7 @@ public class AppConfig {
 
     @Value("${custom.site.backUrl}")
     public void setSiteBackUrl(String siteBackUrl) {
-        AppConfig.siteBackUrl = siteBackUrl;
+        this.siteBackUrl = siteBackUrl;
     }
 
     @Getter
@@ -48,7 +48,7 @@ public class AppConfig {
 
     @Value("${custom.site.cookieDomain}")
     public void setSiteCookieDomain(String siteCookieDomain) {
-        AppConfig.siteCookieDomain = siteCookieDomain;
+        this.siteCookieDomain = siteCookieDomain;
     }
 
     private static String resourcesStaticDirPath;
@@ -71,7 +71,7 @@ public class AppConfig {
 
     @Value("${custom.temp.dirPath}")
     public void setTempDirPath(String tempDirPath) {
-        AppConfig.tempDirPath = tempDirPath;
+        this.tempDirPath = tempDirPath;
     }
 
     @Getter
@@ -79,7 +79,7 @@ public class AppConfig {
 
     @Value("${custom.genFile.dirPath}")
     public void setGenFileDirPath(String genFileDirPath) {
-        AppConfig.genFileDirPath = genFileDirPath;
+        this.genFileDirPath = genFileDirPath;
     }
 
     @Getter
@@ -87,7 +87,7 @@ public class AppConfig {
 
     @Value("${custom.site.name}")
     public void setSiteName(String name) {
-        siteName = name;
+        this.siteName = name;
     }
 
     @Getter
@@ -95,7 +95,7 @@ public class AppConfig {
 
     @Autowired
     public void setObjectMapper(ObjectMapper objectMapper) {
-        AppConfig.objectMapper = objectMapper;
+        this.objectMapper = objectMapper;
     }
 
     @Getter
