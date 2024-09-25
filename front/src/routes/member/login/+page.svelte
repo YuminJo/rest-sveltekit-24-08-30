@@ -29,7 +29,13 @@
 			}
 		});
 
-		rq.msgAndRedirect(data, error, '/');
+		if (error)
+			rq.msgError(error.msg); // 로그인에 실패했다면 메세지만 출력
+		else {
+			// 로그인에 성공했다면 메세지 출력 후 이동
+			// 이동 후에는 rq.member 객체에 값을 채워서 로그인 처리를 수행
+			rq.msgAndRedirect(data, undefined, '/', () => rq.setLogined(data.data.item));
+		}
 	}
 </script>
 
