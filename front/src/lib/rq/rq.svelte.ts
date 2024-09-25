@@ -113,6 +113,18 @@ class Rq {
   public isLogout() {
     return !this.isLogin();
   }
+
+  public async initAuth() {
+    const { data } = await this.apiEndPoints().GET('/api/v1/members/me');
+    if (data) {
+      this.setLogined(data.data.item);
+    }
+  }
+  public async logoutAndRedirect(url: string) {
+    await this.apiEndPoints().POST('/api/v1/members/logout');
+    this.setLogout();
+    this.replace(url);
+  }
 }
 
 const rq = new Rq();

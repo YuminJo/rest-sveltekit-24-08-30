@@ -9,13 +9,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
 public class ApiSecurityConfig {
     @Bean
     @Order(2) // SecurityConfig::filterChain 보다 늦게 실행되게 하려고 추가
-    SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain apiFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
                 .securityMatcher("/api/**")
                 .authorizeRequests(
@@ -27,7 +28,7 @@ public class ApiSecurityConfig {
                                 .requestMatchers("/api/*/members/login", "/api/*/members/logout")
                                 .permitAll()
                                 .anyRequest()
-                                .permitAll() // 일단 여기를 이런식으로 허용시키고, 나중에 인증필요(.authenticated()) 로 교체해야 한다.
+                                .authenticated()
                 )
                 .csrf(
                         csrf -> csrf
@@ -38,7 +39,8 @@ public class ApiSecurityConfig {
                                 .sessionCreationPolicy(
                                         SessionCreationPolicy.STATELESS
                                 )
-                );
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
