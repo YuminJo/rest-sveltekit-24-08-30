@@ -18,18 +18,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthTokenService {
     public String genToken(Member member, long expireSeconds) {
-        Claims claims = Jwts
-                .claims()
-                .add("id", member.getId())
-                .add("username", member.getUsername())
-                .add("authorities", member.getAuthoritiesAsStringList())
-                .build();
-
         Date issuedAt = new Date();
         Date expiration = new Date(issuedAt.getTime() + 1000 * expireSeconds);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .claims(Map.of(
+                        "id", member.getId(),
+                        "username", member.getUsername(),
+                        "authorities", member.getAuthoritiesAsStringList()
+                ))
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiration)
                 .signWith(SignatureAlgorithm.HS256, AppConfig.getJwtSecretKey())
