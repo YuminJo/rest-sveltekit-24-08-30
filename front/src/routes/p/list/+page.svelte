@@ -18,7 +18,7 @@
 				<a href="/p/{post.id}">{post.title}</a>
 
 				{#if post.actorCanDelete}
-					<button>삭제</button>
+					<button onclick={() => rq.confirmAndDeletePost(post, () => rq.reload())}>삭제</button>
 				{/if}
 				{#if post.actorCanEdit}
 					<a href="/p/{post.id}/edit">수정</a>

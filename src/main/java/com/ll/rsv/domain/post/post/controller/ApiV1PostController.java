@@ -6,6 +6,7 @@ import com.ll.rsv.domain.post.post.service.PostService;
 import com.ll.rsv.global.exceptions.GlobalException;
 import com.ll.rsv.global.rq.Rq;
 import com.ll.rsv.global.rsData.RsData;
+import com.ll.rsv.standard.base.Empty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -96,4 +97,19 @@ public class ApiV1PostController {
         );
     }
     // 아래에 2줄을 띄워서 각 요청별 코드를 보기쉽게 나눠줌, 글 수정 끝
+    
+    @DeleteMapping(value = "/{id}")
+    public RsData<Empty> delete(@PathVariable long id)
+    {
+        Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        if (!postService.canDelete(rq.getMember(), post))
+            throw new GlobalException("403-1", "권한이 없습니다.");
+
+        postService.delete(post);
+
+        return RsData.of(
+                "%d번 글이 삭제되었습니다.".formatted(id)
+        );
+    }
 }

@@ -66,4 +66,9 @@ public class PostService {
         if (actor.isAdmin()) return true; // 관리자이면 가능
         return actor.equals(post.getAuthor()); // 본인이면 가능
     }
+    
+    @Transactional
+    public void delete(Post post) {
+        postRepository.delete(post);
+    }
 }

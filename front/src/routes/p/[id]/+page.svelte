@@ -21,7 +21,7 @@
 	<div class="whitespace-pre-line">{post.body}</div>
 	<div>
 		{#if post.actorCanDelete}
-			<button>삭제</button>
+			<button onclick={() => rq.confirmAndDeletePost(post, '/p/list')}>삭제</button>
 		{/if}
 		{#if post.actorCanEdit}
 			<a href="/p/{post.id}/edit">수정</a>
