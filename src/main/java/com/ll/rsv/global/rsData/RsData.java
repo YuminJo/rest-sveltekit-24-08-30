@@ -50,4 +50,8 @@ public class RsData<T> {
     public boolean isFail() {
         return !isSuccess();
     }
+
+    public <T> RsData<T> newDataOf(T data) {
+        return new RsData<>(resultCode, statusCode, msg, data);
+    }
 }

@@ -5,9 +5,8 @@ import com.ll.rsv.domain.member.member.repository.MemberRepository;
 import com.ll.rsv.global.exceptions.GlobalException;
 import com.ll.rsv.global.rsData.RsData;
 import com.ll.rsv.global.security.SecurityUser;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -57,12 +56,11 @@ public class MemberService {
         return join(username, "");
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class AuthAndMakeTokensResponseBody {
-        private Member member;
-        private String accessToken;
-        private String refreshToken;
+    public record AuthAndMakeTokensResponseBody(
+            @NonNull Member member,
+            @NonNull String accessToken,
+            @NonNull String refreshToken
+    ) {
     }
 
     @Transactional
@@ -77,8 +75,7 @@ public class MemberService {
         String accessToken = authTokenService.genAccessToken(member);
 
         return RsData.of(
-                "200-1",
-                "로그인 성공",
+                "%s님 안녕하세요.".formatted(member.getUsername()),
                 new AuthAndMakeTokensResponseBody(member, accessToken, refreshToken)
         );
     }
