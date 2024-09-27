@@ -2,6 +2,7 @@ package com.ll.rsv.global.app;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 
 @Configuration
+@RequiredArgsConstructor
 public class AppConfig {
     @Getter
     public static String jwtSecretKey;
@@ -86,8 +88,8 @@ public class AppConfig {
     public static String siteName;
 
     @Value("${custom.site.name}")
-    public void setSiteName(String name) {
-        this.siteName = name;
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
     }
 
     @Getter

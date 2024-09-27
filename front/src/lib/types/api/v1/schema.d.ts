@@ -104,9 +104,9 @@ export interface components {
             published: boolean;
         };
         EditResponseBody: {
-            item: components["schemas"]["PostDto"];
+            item: components["schemas"]["PostWithBodyDto"];
         };
-        PostDto: {
+        PostWithBodyDto: {
             /** Format: int64 */
             id: number;
             /** Format: date-time */
@@ -117,11 +117,11 @@ export interface components {
             authorId: number;
             authorName: string;
             title: string;
-            body: string;
-            published?: boolean;
+            published: boolean;
             actorCanRead?: boolean;
             actorCanEdit?: boolean;
             actorCanDelete?: boolean;
+            body: string;
         };
         RsDataEditResponseBody: {
             resultCode: string;
@@ -161,6 +161,22 @@ export interface components {
         GetPostsResponseBody: {
             items: components["schemas"]["PostDto"][];
         };
+        PostDto: {
+            /** Format: int64 */
+            id: number;
+            /** Format: date-time */
+            createDate: string;
+            /** Format: date-time */
+            modifyDate: string;
+            /** Format: int64 */
+            authorId: number;
+            authorName: string;
+            title: string;
+            published: boolean;
+            actorCanRead?: boolean;
+            actorCanEdit?: boolean;
+            actorCanDelete?: boolean;
+        };
         RsDataGetPostsResponseBody: {
             resultCode: string;
             /** Format: int32 */
@@ -171,7 +187,7 @@ export interface components {
             success: boolean;
         };
         GetPostResponseBody: {
-            item: components["schemas"]["PostDto"];
+            item: components["schemas"]["PostWithBodyDto"];
         };
         RsDataGetPostResponseBody: {
             resultCode: string;

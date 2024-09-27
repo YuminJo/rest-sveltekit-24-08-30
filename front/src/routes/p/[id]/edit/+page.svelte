@@ -3,6 +3,8 @@
 	import rq from '$lib/rq/rq.svelte';
 
 	async function load() {
+		if (import.meta.env.SSR) throw new Error('CSR ONLY');
+
 		const { data, error } = await rq
 			.apiEndPoints()
 			.GET('/api/v1/posts/{id}', { params: { path: { id: parseInt($page.params.id) } } });
