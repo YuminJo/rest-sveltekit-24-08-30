@@ -22,7 +22,7 @@
 	<ul>
 		{#each posts as post}
 			<li>
-				<a href="/p/{post.id}">{post.title}</a>
+				<a href="/p/{post.id}">{post.id}. {post.title} / 추천 : {post.likesCount}</a>
 
 				{#if post.actorCanDelete}
 					<button

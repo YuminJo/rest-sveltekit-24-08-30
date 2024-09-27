@@ -20,7 +20,7 @@ public class PostService {
     private final PostDetailRepository postDetailRepository;
 
     @Transactional
-    public void write(Member author, String title, String body, boolean published) {
+    public Post write(Member author, String title, String body, boolean published) {
         Post post = Post.builder()
                 .author(author)
                 .title(title)
@@ -29,7 +29,18 @@ public class PostService {
 
         postRepository.save(post);
 
+        post.setDetailBody(
+                PostDetail
+                        .builder()
+                        .post(post)
+                        .name("common__body")
+                        .val(body)
+                        .build()
+        );
+
         saveBody(post, body);
+
+        return post;
     }
 
     private void saveBody(Post post, String body) {

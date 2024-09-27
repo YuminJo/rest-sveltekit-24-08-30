@@ -56,6 +56,11 @@
 		</div>
 
 		<div>
+			<div>추천</div>
+			<div>추천 : {post.likesCount}</div>
+		</div>
+
+		<div>
 			<div>내용</div>
 			<textarea name="body">{post.body}</textarea>
 		</div>

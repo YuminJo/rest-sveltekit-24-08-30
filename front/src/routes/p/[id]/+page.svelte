@@ -20,6 +20,7 @@
 	<div>loading...</div>
 {:then { data: { item: post } }}
 	<h1>{post.title}</h1>
+	<div>추천 : {post.likesCount}</div>
 	<div class="whitespace-pre-line">{post.body}</div>
 	<div>
 		{#if post.actorCanDelete}

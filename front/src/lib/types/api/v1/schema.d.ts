@@ -95,8 +95,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["Empty"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         EditRequestBody: {
             title: string;
@@ -118,6 +118,8 @@ export interface components {
             authorName: string;
             title: string;
             published: boolean;
+            /** Format: int64 */
+            likesCount: number;
             actorCanRead?: boolean;
             actorCanEdit?: boolean;
             actorCanDelete?: boolean;
@@ -129,8 +131,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["EditResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         LoginRequestBody: {
             username: string;
@@ -155,8 +157,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["LoginResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         GetPostsResponseBody: {
             items: components["schemas"]["PostDto"][];
@@ -173,6 +175,8 @@ export interface components {
             authorName: string;
             title: string;
             published: boolean;
+            /** Format: int64 */
+            likesCount: number;
             actorCanRead?: boolean;
             actorCanEdit?: boolean;
             actorCanDelete?: boolean;
@@ -183,8 +187,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["GetPostsResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         GetPostResponseBody: {
             item: components["schemas"]["PostWithBodyDto"];
@@ -195,8 +199,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["GetPostResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         MeResponseBody: {
             item: components["schemas"]["MemberDto"];
@@ -207,8 +211,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["MeResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
     };
     responses: never;
