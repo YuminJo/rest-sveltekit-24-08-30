@@ -151,6 +151,38 @@ class Rq {
     if (typeof callback === 'function') callback();
     else this.replace(callback);
   }
+
+  public async like(
+    post: components['schemas']['PostDto'],
+    callback: string | ((data: components['schemas']['RsDataLikeResponseBody']) => void)
+  ) {
+    const { data } = await this.apiEndPoints().POST('/api/v1/posts/{id}/like', {
+      params: {
+        path: {
+          id: post.id
+        }
+      }
+    });
+
+    if (typeof callback === 'function') callback(data!);
+    else this.replace(callback);
+  }
+
+  public async cancelLike(
+    post: components['schemas']['PostDto'],
+    callback: string | ((data: components['schemas']['RsDataCancelLikeResponseBody']) => void)
+  ) {
+    const { data } = await this.apiEndPoints().DELETE('/api/v1/posts/{id}/cancelLike', {
+      params: {
+        path: {
+          id: post.id
+        }
+      }
+    });
+
+    if (typeof callback === 'function') callback(data!);
+    else this.replace(callback);
+  }
 }
 
 const rq = new Rq();

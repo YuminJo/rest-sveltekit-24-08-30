@@ -4,10 +4,7 @@ import com.ll.rsv.domain.member.member.entity.Member;
 import com.ll.rsv.domain.post.post.entity.Post;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -19,6 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PROTECTED)
 @EqualsAndHashCode
+@Getter
 public class PostLikeId implements Serializable { // 복합키가 되려면 implements Serializable 붙여야 함
     @ManyToOne(fetch = LAZY)
     private Post post;

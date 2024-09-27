@@ -76,6 +76,11 @@ public class PostService {
     }
 
     @Transactional
+    public void delete(Post post) {
+        postRepository.delete(post);
+    }
+
+    @Transactional
     public void edit(Post post, String title, String body, boolean published) {
         post.setTitle(title);
         post.setPublished(published);
@@ -108,8 +113,27 @@ public class PostService {
         return actor.equals(post.getAuthor()); // 본인이면 가능
     }
 
+    public Boolean canLike(Member actor, Post post) {
+        if (actor == null) return false;
+        if (post == null) return false;
+
+        return !post.hasLike(actor);
+    }
+
+    public Boolean canCancelLike(Member actor, Post post) {
+        if (actor == null) return false;
+        if (post == null) return false;
+
+        return post.hasLike(actor);
+    }
+
     @Transactional
-    public void delete(Post post) {
-        postRepository.delete(post);
+    public void like(Member actor, Post post) {
+        post.addLike(actor);
+    }
+
+    @Transactional
+    public void cancelLike(Member actor, Post post) {
+        post.deleteLike(actor);
     }
 }

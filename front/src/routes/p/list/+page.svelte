@@ -36,6 +36,25 @@
 				{#if post.actorCanEdit}
 					<a href="/p/{post.id}/edit">수정</a>
 				{/if}
+
+				{#if post.actorCanLike}
+					<button
+						onclick={() =>
+							rq.like(post, (data) => {
+								Object.assign(post, data.data.item);
+								alert(data.msg);
+							})}>추천</button
+					>
+				{/if}
+				{#if post.actorCanCancelLike}
+					<button
+						onclick={() =>
+							rq.cancelLike(post, (data) => {
+								Object.assign(post, data.data.item);
+								alert(data.msg);
+							})}>추천취소</button
+					>
+				{/if}
 			</li>
 		{/each}
 	</ul>

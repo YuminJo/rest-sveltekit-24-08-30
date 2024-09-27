@@ -32,6 +32,10 @@ public abstract class AbsPostDto {
     private Boolean actorCanEdit;
     @Setter
     private Boolean actorCanDelete;
+    @Setter
+    private Boolean actorCanLike;
+    @Setter
+    private Boolean actorCanCancelLike;
 
     public AbsPostDto(Post post) {
         this.id = post.getId();

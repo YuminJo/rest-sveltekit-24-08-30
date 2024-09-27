@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.springframework.lang.NonNull;
 
 @Getter
-public class PostWithBodyDto extends AbsPostDto {
+public class PostWithBodyDto extends PostDto {
     @NonNull
     private String body;
 

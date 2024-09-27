@@ -65,4 +65,13 @@ public class Post extends BaseTime {
             decreaseLikesCount();
         }
     }
+    
+    public boolean hasLike(Member actor) {
+        return likes.contains(
+                PostLike.builder()
+                        .post(this)
+                        .member(actor)
+                        .build()
+        );
+    }
 }
