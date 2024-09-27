@@ -37,7 +37,7 @@ public class MemberService {
                 .build();
         memberRepository.save(member);
 
-        return RsData.of("200", "%s님 환영합니다. 회원가입이 완료되었습니다. 로그인 후 이용해주세요.".formatted(member.getUsername()), member);
+        return RsData.of("%s님 환영합니다. 회원가입이 완료되었습니다. 로그인 후 이용해주세요.".formatted(member.getUsername()), member);
     }
 
     public Optional<Member> findByUsername(String username) {
@@ -51,7 +51,7 @@ public class MemberService {
     public RsData<Member> whenSocialLogin(String providerTypeCode, String username, String nickname, String profileImgUrl) {
         Optional<Member> opMember = findByUsername(username);
 
-        if (opMember.isPresent()) return RsData.of("200", "이미 존재합니다.", opMember.get());
+        if (opMember.isPresent()) return RsData.of("이미 존재합니다.", opMember.get());
 
         return join(username, "");
     }

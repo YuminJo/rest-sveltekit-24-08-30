@@ -71,6 +71,6 @@ public class ApiV1MemberController {
         // 그래서 어쩔 수 없이 서버측에 삭제요청을 하면 이렇게 아래에서 처럼 지워는 형식을 취한다.
         rq.setLogout();
 
-        return RsData.of("200", "로그아웃 성공");
+        return RsData.of("로그아웃 성공");
     }
 }
