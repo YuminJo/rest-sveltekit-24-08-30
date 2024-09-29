@@ -19,11 +19,3 @@
 <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"/> <img src="https://img.shields.io/badge/jwt-333333?style=for-the-badge&logo=jwt&logoColor=white"/> <img src="https://img.shields.io/badge/quartz-333333?style=for-the-badge&logo=quartz&logoColor=white"/> <br>
 
 <br>
-<br>
-
-## [🛠 기술적 의사결정]()
-<br>
-
-## [🔥 트러블 슈팅]()
-
-<br>
