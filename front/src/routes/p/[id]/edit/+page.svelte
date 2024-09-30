@@ -46,6 +46,16 @@
 {:then { data: { item: post } }}
 	<form action="" on:submit|preventDefault={submitLoginForm}>
 		<div>
+			<div>번호</div>
+			<div>번호 : {post.id}</div>
+		</div>
+
+		<div>
+			<div>추천</div>
+			<div>추천 : {post.likesCount}</div>
+		</div>
+
+		<div>
 			<div>공개</div>
 			<input type="checkbox" name="published" value={true} checked={post.published} />
 		</div>
@@ -53,11 +63,6 @@
 		<div>
 			<div>제목</div>
 			<input type="text" name="title" value={post.title} />
-		</div>
-
-		<div>
-			<div>추천</div>
-			<div>추천 : {post.likesCount}</div>
 		</div>
 
 		<div>

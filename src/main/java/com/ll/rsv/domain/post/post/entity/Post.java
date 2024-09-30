@@ -24,6 +24,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Setter
 public class Post extends BaseTime {
     @OneToMany(mappedBy = "id.post", cascade = ALL, orphanRemoval = true)
+    @ToString.Exclude
     @Builder.Default
     private Set<PostLike> likes = new HashSet<>();
     @Setter(PROTECTED)

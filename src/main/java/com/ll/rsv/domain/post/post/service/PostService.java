@@ -41,7 +41,6 @@ public class PostService {
                         .builder()
                         .post(post)
                         .name("common__body")
-                        .val(body)
                         .build()
         );
 

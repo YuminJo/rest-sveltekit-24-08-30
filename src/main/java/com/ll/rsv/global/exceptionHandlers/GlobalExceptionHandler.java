@@ -23,8 +23,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception ex) {
-        // 아래 `throw ex;` 코드는 API 요청이 아닌 경우에만 실행된다.
-        // if (rq.isApi()) throw ex; // 어짜피 이 서버(스프링부트)를 API서버로만 이용할 것이므로 이 코드는 필요 없다.
+        // 어짜피 이 서버(스프링부트)를 API서버로만 이용할 것이므로 이 코드는 필요 없다.
+        // 그리고 isApi 의 로직은 조금 더 보강을 해야 한다.
+        // if (!rq.isApi()) throw ex;
 
         return handleApiException(ex);
     }

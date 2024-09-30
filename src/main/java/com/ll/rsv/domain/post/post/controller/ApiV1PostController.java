@@ -141,7 +141,7 @@ public class ApiV1PostController {
     }
     public record CancelLikeResponseBody(@NonNull PostDto item) {
     }
-    @DeleteMapping(value = "/{id}/cancelLike")
+    @DeleteMapping("/{id}/cancelLike")
     @Transactional
     public RsData<CancelLikeResponseBody> cancelLike(
             @PathVariable long id
