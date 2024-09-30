@@ -34,8 +34,15 @@ public class ApiV1PostController {
     @GetMapping("")
     public RsData<GetPostsResponseBody> getPosts() {
         List<Post> items = postService.findByPublished(true);
+
+        if (rq.isLogin()) {
+            // 로그인 했다면 먼저 해당 회원이 각 글들에 대해서 추천을 했는지를 true, false 형태로 정리한 맵을 먼저 만들고 캐시에 등록한다.
+            // 이 작업을 안해도 아래기능이 실행되기는 하지만 각 글들을의 모든 추천정보를 전부다 가져오는 쿼리가 실행되어 버린다.
+            postService.loadLikeMap(items, rq.getMember());
+        }
+
         List<PostDto> _items = items.stream()
-                .map(this::postToDto)
+                .map(this::postToDto) // 이 작업에서 캐시가 없었다면, 추가 쿼리가 발생한다.
                 .collect(Collectors.toList());
 
         return RsData.of(
