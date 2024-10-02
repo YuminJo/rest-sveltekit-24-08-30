@@ -23,9 +23,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthTokenService authTokenService;
-
+    
     @Transactional
     public RsData<Member> join(String username, String password) {
+        return join(username, password, username, "");
+    }
+
+    @Transactional
+    public RsData<Member> join(String username, String password, String nickname, String profileImgUrl) {
         if (findByUsername(username).isPresent()) {
             return RsData.of("400-2", "이미 존재하는 회원입니다.");
         }
@@ -34,10 +39,12 @@ public class MemberService {
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .refreshToken(authTokenService.genRefreshToken())
+                .nickname(nickname)
+                .profileImgUrl(profileImgUrl)
                 .build();
         memberRepository.save(member);
 
-        return RsData.of("%s님 환영합니다. 회원가입이 완료되었습니다. 로그인 후 이용해주세요.".formatted(member.getUsername()), member);
+        return RsData.of("회원가입이 완료되었습니다.".formatted(member.getUsername()), member);
     }
 
     public Optional<Member> findByUsername(String username) {
@@ -48,12 +55,25 @@ public class MemberService {
         return memberRepository.count();
     }
 
-    public RsData<Member> whenSocialLogin(String providerTypeCode, String username, String nickname, String profileImgUrl) {
-        Optional<Member> opMember = findByUsername(username);
+    @Transactional
+    public RsData<Member> modifyOrJoin(String username, String providerTypeCode, String nickname, String profileImgUrl) {
+        Member member = findByUsername(username).orElse(null);
+        
+        if (member == null) {
+            return join(
+                    username, "", nickname, profileImgUrl
+            );
+        }
+        
+        return modify(member, nickname, profileImgUrl);
+    }
 
-        if (opMember.isPresent()) return RsData.of("이미 존재합니다.", opMember.get());
+    @Transactional
+    public RsData<Member> modify(Member member, String nickname, String profileImgUrl) {
+        member.setNickname(nickname);
+        member.setProfileImgUrl(profileImgUrl);
 
-        return join(username, "");
+        return RsData.of("회원정보가 수정되었습니다.".formatted(member.getUsername()), member);
     }
 
     public record AuthAndMakeTokensResponseBody(

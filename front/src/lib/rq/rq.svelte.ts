@@ -59,7 +59,8 @@ class Rq {
   // member 의 값이 바뀌면, member 를 사용하는 모든 곳에서 자동으로 즉각 반영된다.
   public makeReactivityMember() {
     let id = $state(0);
-    let username = $state('');
+    let name = $state('');
+    let profileImgUrl = $state('');
     let createDate = $state('');
     let modifyDate = $state('');
     let authorities: string[] = $state([]);
@@ -83,11 +84,17 @@ class Rq {
       set modifyDate(value: string) {
         modifyDate = value;
       },
-      get username() {
-        return username;
+      get name() {
+        return name;
       },
-      set username(value: string) {
-        username = value;
+      set name(value: string) {
+        name = value;
+      },
+      get profileImgUrl() {
+        return profileImgUrl;
+      },
+      set profileImgUrl(value: string) {
+        profileImgUrl = value;
       },
       get authorities() {
         return authorities;
@@ -106,7 +113,8 @@ class Rq {
     this.member.id = 0;
     this.member.createDate = '';
     this.member.modifyDate = '';
-    this.member.username = '';
+    this.member.name = '';
+    this.member.profileImgUrl = '';
     this.member.authorities = [];
   }
 
@@ -182,6 +190,14 @@ class Rq {
 
     if (typeof callback === 'function') callback(data!);
     else this.replace(callback);
+  }
+
+  public getKakaoLoginUrl() {
+    return `${
+      import.meta.env.VITE_CORE_API_BASE_URL
+    }/member/socialLogin/kakao?redirectUrl=${encodeURIComponent(
+      import.meta.env.VITE_CORE_FRONT_BASE_URL
+    )}/member/socialLoginCallback?provierTypeCode=kakao`;
   }
 }
 

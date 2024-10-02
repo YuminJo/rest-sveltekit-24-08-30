@@ -16,7 +16,8 @@
 	<a href="/">slog</a>
 
 	{#if rq.isLogin()}
-		<a href="/member/me">{rq.member.username}님의 정보</a>
+		<img class="inline-block rounded" src={rq.member.profileImgUrl} width="30" alt="" />
+		<a href="/member/me">{rq.member.name}님의 정보</a>
 		<button on:click={() => rq.logoutAndRedirect('/')}>로그아웃</button>
 	{/if}
 
