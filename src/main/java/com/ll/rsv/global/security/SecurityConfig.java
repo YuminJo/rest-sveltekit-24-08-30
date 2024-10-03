@@ -44,6 +44,11 @@ public class SecurityConfig {
                                 csrf.ignoringRequestMatchers(
                                         "/h2-console/**"
                                 )
+                )
+                .oauth2Login(
+                        oauth2Login ->
+                                oauth2Login
+                                        .successHandler(customAuthenticationSuccessHandler)
                 );
 
         return http.build();

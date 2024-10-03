@@ -192,12 +192,12 @@ class Rq {
     else this.replace(callback);
   }
 
-  public getKakaoLoginUrl() {
+  public getGoogleLoginUrl() {
     return `${
       import.meta.env.VITE_CORE_API_BASE_URL
-    }/member/socialLogin/kakao?redirectUrl=${encodeURIComponent(
+    }/member/socialLogin/google?redirectUrl=${encodeURIComponent(
       import.meta.env.VITE_CORE_FRONT_BASE_URL
-    )}/member/socialLoginCallback?provierTypeCode=kakao`;
+    )}/member/socialLoginCallback?provierTypeCode=google`;
   }
 }
 

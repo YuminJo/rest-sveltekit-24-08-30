@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/members")
+@RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
     private final Rq rq;
@@ -20,6 +20,7 @@ public class MemberController {
         if (rq.isFrontUrl(redirectUrl)) {
             rq.setCookie("redirectUrlAfterSocialLogin", redirectUrl, 60 * 10);
         }
+        
         return "redirect:/oauth2/authorization/" + providerTypeCode;
     }
 }
