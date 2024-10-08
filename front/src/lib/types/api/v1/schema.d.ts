@@ -36,6 +36,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/posts/temp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["makeTemp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/members/logout": {
         parameters: {
             query?: never;
@@ -127,8 +143,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["Empty"];
-            fail: boolean;
             success: boolean;
+            fail: boolean;
         };
         EditRequestBody: {
             title: string;
@@ -166,8 +182,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["EditResponseBody"];
-            fail: boolean;
             success: boolean;
+            fail: boolean;
         };
         LikeResponseBody: {
             item: components["schemas"]["PostDto"];
@@ -199,8 +215,20 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["LikeResponseBody"];
-            fail: boolean;
             success: boolean;
+            fail: boolean;
+        };
+        MakeTempResponseBody: {
+            item: components["schemas"]["PostDto"];
+        };
+        RsDataMakeTempResponseBody: {
+            resultCode: string;
+            /** Format: int32 */
+            statusCode: number;
+            msg: string;
+            data: components["schemas"]["MakeTempResponseBody"];
+            success: boolean;
+            fail: boolean;
         };
         LoginRequestBody: {
             username: string;
@@ -226,8 +254,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["LoginResponseBody"];
-            fail: boolean;
             success: boolean;
+            fail: boolean;
         };
         GetPostsResponseBody: {
             items: components["schemas"]["PostDto"][];
@@ -238,8 +266,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["GetPostsResponseBody"];
-            fail: boolean;
             success: boolean;
+            fail: boolean;
         };
         GetPostResponseBody: {
             item: components["schemas"]["PostWithBodyDto"];
@@ -250,8 +278,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["GetPostResponseBody"];
-            fail: boolean;
             success: boolean;
+            fail: boolean;
         };
         MeResponseBody: {
             item: components["schemas"]["MemberDto"];
@@ -262,8 +290,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["MeResponseBody"];
-            fail: boolean;
             success: boolean;
+            fail: boolean;
         };
         CancelLikeResponseBody: {
             item: components["schemas"]["PostDto"];
@@ -274,8 +302,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["CancelLikeResponseBody"];
-            fail: boolean;
             success: boolean;
+            fail: boolean;
         };
     };
     responses: never;
@@ -401,6 +429,35 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["RsDataLikeResponseBody"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataEmpty"];
+                };
+            };
+        };
+    };
+    makeTemp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataMakeTempResponseBody"];
                 };
             };
             /** @description Internal Server Error */

@@ -24,8 +24,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ApiV1PostController {
-    public final Rq rq;
     private final PostService postService;
+    private final Rq rq;
+
+
+    public record MakeTempResponseBody(@NonNull PostDto item) {
+    }
+
+    @Transactional
+    @PostMapping("/temp")
+    public RsData<MakeTempResponseBody> makeTemp() {
+        RsData<Post> findTempOrMakeRsData = postService.findTempOrMake(rq.getMember());
+
+        return findTempOrMakeRsData.newDataOf(
+                new MakeTempResponseBody(
+                        postToDto(findTempOrMakeRsData.getData())
+                )
+        );
+    }
 
 
     public record GetPostsResponseBody(@NonNull List<PostDto> items) {
@@ -42,7 +58,7 @@ public class ApiV1PostController {
         }
 
         List<PostDto> _items = items.stream()
-                .map(this::postToDto) // 이 작업에서 캐시가 없었다면, 추가 쿼리가 발생한다.
+                .map(this::postToDto)// 이 작업에서 캐시가 없었다면, 추가 쿼리가 발생한다.
                 .collect(Collectors.toList());
 
         return RsData.of(
@@ -52,7 +68,7 @@ public class ApiV1PostController {
         );
     }
 
-
+    
     // 위에 2줄을 띄워서 각 요청별 코드를 보기쉽게 나눠줌, 단건 조회 시작
     // 레코드 도입하여 요청Body 클래스 단순화
     public record GetPostResponseBody(@NonNull PostWithBodyDto item) {
@@ -68,7 +84,7 @@ public class ApiV1PostController {
             throw new GlobalException("403-1", "권한이 없습니다.");
 
         PostWithBodyDto dto = postToWithBodyDto(post);
-        
+
         return RsData.of(
                 new GetPostResponseBody(dto)
         );
@@ -80,12 +96,13 @@ public class ApiV1PostController {
     // 레코드 도입하여 요청Body 클래스 단순화
     public record EditRequestBody(@NotBlank String title, @NotBlank String body, @NotNull boolean published) {
     }
-
+    
     // 레코드 도입하여 응답Body 클래스 단순화
     public record EditResponseBody(@NonNull PostWithBodyDto item) {
     }
 
     @PutMapping(value = "/{id}")
+    @Transactional
     public RsData<EditResponseBody> edit(
             @PathVariable long id,
             @Valid @RequestBody EditRequestBody requestBody
@@ -103,12 +120,13 @@ public class ApiV1PostController {
                 new EditResponseBody(new PostWithBodyDto(post))
         );
     }
-    // 아래에 2줄을 띄워서 각 요청별 코드를 보기쉽게 나눠줌, 글 수정 끝
-    
-    @DeleteMapping(value = "/{id}")
+
+
+    @DeleteMapping("/{id}")
     @Transactional
-    public RsData<Empty> delete(@PathVariable long id)
-    {
+    public RsData<Empty> delete(
+            @PathVariable long id
+    ) {
         Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
 
         if (!postService.canDelete(rq.getMember(), post))
@@ -124,48 +142,67 @@ public class ApiV1PostController {
 
     public record LikeResponseBody(@NonNull PostDto item) {
     }
+
     @PostMapping(value = "/{id}/like")
     @Transactional
     public RsData<LikeResponseBody> like(
             @PathVariable long id
     ) {
         Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
+
         if (!postService.canLike(rq.getMember(), post))
             throw new GlobalException("403-1", "권한이 없습니다.");
+
         postService.like(rq.getMember(), post);
+
         PostDto dto = postToDto(post);
+
         return RsData.of(
                 "%d번 글을 추천하였습니다.".formatted(id),
                 new LikeResponseBody(dto)
         );
     }
+
+
     public record CancelLikeResponseBody(@NonNull PostDto item) {
     }
-    @DeleteMapping("/{id}/cancelLike")
+
+    @DeleteMapping(value = "/{id}/cancelLike")
     @Transactional
     public RsData<CancelLikeResponseBody> cancelLike(
             @PathVariable long id
     ) {
         Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
+
         if (!postService.canCancelLike(rq.getMember(), post))
             throw new GlobalException("403-1", "권한이 없습니다.");
+
         postService.cancelLike(rq.getMember(), post);
+
         PostDto dto = postToDto(post);
+
         return RsData.of(
                 "%d번 글을 추천취소하였습니다.".formatted(id),
                 new CancelLikeResponseBody(dto)
         );
     }
+
     private PostDto postToDto(Post post) {
         PostDto dto = new PostDto(post);
+
         loadAdditionalInfo(dto, post);
+
         return dto;
     }
+
     private PostWithBodyDto postToWithBodyDto(Post post) {
         PostWithBodyDto dto = new PostWithBodyDto(post);
+
         loadAdditionalInfo(dto, post);
+
         return dto;
     }
+
     private void loadAdditionalInfo(PostDto dto, Post post) {
         dto.setActorCanRead(postService.canRead(rq.getMember(), post));
         dto.setActorCanEdit(postService.canEdit(rq.getMember(), post));

@@ -160,6 +160,15 @@ class Rq {
     else this.replace(callback);
   }
 
+  public async goToTempPostEditPage() {
+    const { data } = await this.apiEndPoints().POST('/api/v1/posts/temp');
+
+    if (data) {
+      this.msgInfo(data.msg);
+      this.goTo(`/p/${data.data.item.id}/edit`);
+    }
+  }
+
   public async like(
     post: components['schemas']['PostDto'],
     callback: string | ((data: components['schemas']['RsDataLikeResponseBody']) => void)

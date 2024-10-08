@@ -7,6 +7,7 @@ import com.ll.rsv.domain.post.post.repository.PostDetailRepository;
 import com.ll.rsv.domain.post.post.repository.PostRepository;
 import com.ll.rsv.domain.post.postLike.entity.PostLike;
 import com.ll.rsv.domain.post.postLike.repository.PostLikeRepository;
+import com.ll.rsv.global.rsData.RsData;
 import com.ll.rsv.global.transactionCache.TransactionCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @RequiredArgsConstructor
@@ -175,5 +177,22 @@ public class PostService {
 
     private List<PostLike> findLikesByPostInAndMember(List<Post> posts, Member member) {
         return postLikeRepository.findByIdPostInAndIdMember(posts, member);
+    }
+
+    @Transactional
+    public RsData<Post> findTempOrMake(Member author) {
+        AtomicBoolean isNew = new AtomicBoolean(false);
+        Post post = postRepository.findTop1ByAuthorAndPublishedAndTitleOrderByIdDesc(
+                author,
+                false,
+                "임시글"
+        ).orElseGet(() -> {
+            isNew.set(true);
+            return write(author, "임시글", "", false);
+        });
+        return RsData.of(
+                isNew.get() ? "임시글이 생성되었습니다." : "%d번 임시글을 불러왔습니다.".formatted(post.getId()),
+                post
+        );
     }
 }
