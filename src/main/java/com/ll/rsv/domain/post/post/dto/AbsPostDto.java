@@ -20,6 +20,8 @@ public abstract class AbsPostDto {
     @NonNull
     private String authorName;
     @NonNull
+    private String authorProfileImgUrl;
+    @NonNull
     private String title;
     @NonNull
     private boolean published;
@@ -43,6 +45,7 @@ public abstract class AbsPostDto {
         this.modifyDate = post.getModifyDate();
         this.authorId = post.getAuthor().getId();
         this.authorName = post.getAuthor().getName();
+        this.authorProfileImgUrl = post.getAuthor().getProfileImgUrlOrDefault();
         this.title = post.getTitle();
         this.published = post.isPublished();
         this.likesCount = post.getLikesCount();
