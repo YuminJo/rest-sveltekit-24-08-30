@@ -3,6 +3,16 @@ import { goto } from '$app/navigation';
 import type { components, paths } from '$lib/types/api/v1/schema';
 import createClient from 'openapi-fetch';
 
+import toastr from 'toastr';
+import 'toastr/build/toastr.css';
+
+toastr.options = {
+  showDuration: 300,
+  hideDuration: 300,
+  timeOut: 3000,
+  extendedTimeOut: 1000
+};
+
 class Rq {
   public member: components['schemas']['MemberDto'];
 
@@ -46,12 +56,12 @@ class Rq {
     if (callback) window.setTimeout(callback, 100);
   }
 
-  public msgInfo(msg: string) {
-    window.alert(msg);
+  public msgInfo(message: string) {
+    toastr.info(message);
   }
 
-  public msgError(msg: string) {
-    window.alert(msg);
+  public msgError(message: string) {
+    toastr.error(message);
   }
 
   // 인증

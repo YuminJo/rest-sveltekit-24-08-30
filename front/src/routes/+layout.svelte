@@ -21,9 +21,9 @@
 		<img class="rounded-full" src={rq.member.profileImgUrl} width="30" alt="" />
 		<a href="/member/me">{rq.member.name}님의 정보</a>
 
-		<button on:click={() => rq.goToTempPostEditPage()}>글 쓰기</button>
+		<button onclick={() => rq.goToTempPostEditPage()}>글 쓰기</button>
 
-		<button on:click={() => rq.logoutAndRedirect('/')}>로그아웃</button>
+		<button onclick={() => rq.logoutAndRedirect('/')}>로그아웃</button>
 	{/if}
 
 	{#if rq.isLogout()}
