@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import rq from '$lib/rq/rq.svelte';
 	import { filterObjectKeys, getUrlParams, stripIndent } from '$lib/utils';
 
@@ -29,7 +30,7 @@
 			});
 	}
 
-	$effect(async () => {
+	async function initializeEditor() {
 		const [
 			{ default: Editor },
 			{ default: codeSyntaxHighlight },
@@ -349,9 +350,13 @@
 		return () => {
 			editor.destroy();
 		};
-	});
+	}
 
 	export { editor, switchTab };
+
+	onMount(() => {
+		initializeEditor();
+	});
 </script>
 
 <div bind:this={div}></div>
