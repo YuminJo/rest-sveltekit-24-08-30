@@ -1,6 +1,6 @@
 <script lang="ts">
 	import rq from '$lib/rq/rq.svelte';
-	import ut from '$lib/util/ut';
+	import { prettyDate } from '$lib/utils';
 </script>
 
 <h1>내 정보</h1>
@@ -16,7 +16,7 @@
 	</div>
 	<div>
 		<div>가입날짜</div>
-		<div>{ut.prettyDate(rq.member.createDate)}</div>
+		<div>{prettyDate(rq.member.createDate)}</div>
 	</div>
 	<div>
 		<div>이름</div>

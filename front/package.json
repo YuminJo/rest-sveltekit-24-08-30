@@ -40,6 +40,13 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@toast-ui/editor": "^3.2.2",
+		"@toast-ui/editor-plugin-chart": "^3.0.1",
+		"@toast-ui/editor-plugin-code-syntax-highlight": "^3.1.0",
+		"@toast-ui/editor-plugin-color-syntax": "^3.1.0",
+		"@toast-ui/editor-plugin-table-merged-cell": "^3.1.0",
+		"@toast-ui/editor-plugin-uml": "^3.0.1",
+		"hotkeys-js": "^3.13.3",
 		"openapi-fetch": "^0.12.0",
 		"toastr": "^2.1.4"
 	}

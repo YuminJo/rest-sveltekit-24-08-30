@@ -1,6 +1,6 @@
 <script lang="ts">
 	import rq from '$lib/rq/rq.svelte';
-	import ut from '$lib/util/ut';
+	import { prettyDateTime } from '$lib/utils';
 	import type { components } from '$lib/types/api/v1/schema';
 
 	let posts: components['schemas']['PostDto'][] = $state([]);
@@ -26,7 +26,7 @@
 				<div class="flex items-center gap-2">
 					<a href="/p/{post.id}">{post.id}. {post.title}</a>
 					<span>추천 : {post.likesCount}</span>
-					<span>작성일 : {ut.prettyDateTime(post.createDate)}</span>
+					<span>작성일 : {prettyDateTime(post.createDate)}</span>
 
 					{#if post.actorCanDelete}
 						<button
