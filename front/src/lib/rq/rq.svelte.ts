@@ -21,6 +21,10 @@ class Rq {
     this.member = this.makeReactivityMember();
   }
 
+  public effect(fn: () => void) {
+    $effect(fn);
+  }
+
   public isAdmin() {
     if (this.isLogout()) return false;
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import rq from '$lib/rq/rq.svelte';
 	import { filterObjectKeys, getUrlParams, stripIndent } from '$lib/utils';
 
@@ -15,11 +14,24 @@
 	const {
 		body,
 		viewer = false,
-		height = 'calc(100dvh - 64px)'
+		height = '300px'
 	} = $props<{ body: string; viewer?: boolean; height?: string }>();
 
 	let div: HTMLDivElement | undefined = $state();
 	let editor: any;
+
+	function toggleFullScreen() {
+		window.document.body.classList.toggle('overflow-hidden');
+
+		if (div) {
+			div.classList.toggle('fixed');
+			div.classList.toggle('top-0');
+			div.classList.toggle('left-0');
+			div.classList.toggle('w-full');
+			div.classList.toggle('!h-[100dvh]');
+			div.classList.toggle('bg-white');
+		}
+	}
 
 	function switchTab() {
 		div!
@@ -30,7 +42,7 @@
 			});
 	}
 
-	async function initializeEditor() {
+	rq.effect(async () => {
 		const [
 			{ default: Editor },
 			{ default: codeSyntaxHighlight },
@@ -320,43 +332,56 @@
 						}
 					},
 					language: 'ko-KR',
-					placeholder: stripIndent(`
-              $$config
-              title: 제목
-              open: true
-              $$
-              `).trim(),
+					placeholder: stripIndent(`내용을 입력해주세요.`).trim(),
 					...editorConfig
 				});
 
-		editor.addCommand('markdown', 'openImageUploader', () => {
-			window.open('http://onpaste.com/');
-			return true;
-		});
+		editor.addCommand &&
+			editor.addCommand('markdown', 'toggleFullScreen', () => {
+				toggleFullScreen();
+				return true;
+			});
 
-		editor.removeToolbarItem('image');
-		editor.insertToolbarItem(
-			{ groupIndex: 3, itemIndex: 1 },
-			{
-				name: 'img',
-				tooltip:
-					'이미지를 드래그 앤 드롭하세요. 혹은 붙여넣기하세요. 마지막에 I 버튼 눌러서 URL 생성하세요.',
-				className: 'toastui-editor-toolbar-icons',
-				style: { backgroundPosition: '-309px 3px' },
-				command: 'openImageUploader'
-			}
-		);
+		editor.addCommand &&
+			editor.addCommand('markdown', 'openImageUploader', () => {
+				window.open('http://onpaste.com/');
+				return true;
+			});
 
+		editor.insertToolbarItem &&
+			editor.insertToolbarItem(
+				{ groupIndex: 0, itemIndex: 0 },
+				{
+					name: 'fullscreen',
+					tooltip: '풀스크린모드를 해제/설정합니다.',
+					className: '!text-[20px]',
+					text: 'F',
+					command: 'toggleFullScreen'
+				}
+			);
+
+		editor.removeToolbarItem && editor.removeToolbarItem('image');
+		editor.insertToolbarItem &&
+			editor.insertToolbarItem(
+				{ groupIndex: 3, itemIndex: 1 },
+				{
+					name: 'img',
+					tooltip:
+						'이미지를 드래그 앤 드롭하세요. 혹은 붙여넣기하세요. 마지막에 I 버튼 눌러서 URL 생성하세요.',
+					className: 'toastui-editor-toolbar-icons',
+					style: { backgroundPosition: '-309px 3px' },
+					command: 'openImageUploader'
+				}
+			);
+	});
+
+	rq.effect(() => {
 		return () => {
 			editor.destroy();
 		};
-	}
+	});
 
 	export { editor, switchTab };
-
-	onMount(() => {
-		initializeEditor();
-	});
 </script>
 
 <div bind:this={div}></div>
