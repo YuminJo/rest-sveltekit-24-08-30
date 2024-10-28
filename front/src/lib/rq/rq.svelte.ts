@@ -1,5 +1,5 @@
 import { goto } from '$app/navigation';
-import { page } from '$app/stores';
+import type { Page } from '@sveltejs/kit';
 
 import type { components, paths } from '$lib/types/api/v1/schema';
 import createClient from 'openapi-fetch';
@@ -27,12 +27,12 @@ class Rq {
     return this.member.authorities.includes('ROLE_ADMIN');
   }
 
-  public isAdmPage() {
-    return false; // TODO : 구현해야 함
+  public isAdmPage($page: Page<Record<string, string>>) {
+    return $page.url.pathname.startsWith('/adm');
   }
 
-  public isUsrPage() {
-    return !this.isAdmPage();
+  public isUsrPage($page: Page<Record<string, string>>) {
+    return !this.isAdmPage($page);
   }
 
   // URL
