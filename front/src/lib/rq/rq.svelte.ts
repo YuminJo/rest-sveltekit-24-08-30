@@ -1,4 +1,5 @@
 import { goto } from '$app/navigation';
+import { page } from '$app/stores';
 
 import type { components, paths } from '$lib/types/api/v1/schema';
 import createClient from 'openapi-fetch';
@@ -18,6 +19,20 @@ class Rq {
 
   constructor() {
     this.member = this.makeReactivityMember();
+  }
+
+  public isAdmin() {
+    if (this.isLogout()) return false;
+
+    return this.member.authorities.includes('ROLE_ADMIN');
+  }
+
+  public isAdmPage() {
+    return false; // TODO : 구현해야 함
+  }
+
+  public isUsrPage() {
+    return !this.isAdmPage();
   }
 
   // URL

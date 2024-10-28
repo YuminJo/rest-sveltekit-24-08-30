@@ -36,12 +36,20 @@
 				class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
 			>
 				<li><a href="/p/list"><i class="fa-solid fa-list"></i> 글</a></li>
+				{#if rq.isAdmin()}
+					<li><a href="/adm"><i class="fa-solid fa-gauge"></i> 관리자</a></li>
+				{/if}
 			</ul>
 		</div>
 	</div>
 
 	<div class="flex-1">
-		<a href="/" class="btn btn-ghost text-md">SLOG</a>
+		{#if rq.isUsrPage()}
+			<a href="/" class="btn btn-ghost text-md">SLOG</a>
+		{/if}
+		{#if rq.isAdmPage()}
+			<a href="/adm" class="btn btn-ghost text-md">SLOG ADMIN</a>
+		{/if}
 	</div>
 
 	<div class="flex-none">
@@ -76,7 +84,7 @@
 			>
 				{#if rq.isLogout()}
 					<li>
-						<a href="/member/login"><i class="fa-solid fa-right-to-bracket"></i> 로그인</a>
+						<a href="/member/login"><i class="fa-solid fa-right-to-bracket"></i> 로그인 & 가입</a>
 					</li>
 				{/if}
 				{#if rq.isLogin()}
@@ -93,5 +101,5 @@
 		</div>
 	</div>
 </header>
-<main>{@render children()}</main>
-<footer>푸터</footer>
+<main class="flex-grow flex flex-col">{@render children()}</main>
+<footer></footer>
