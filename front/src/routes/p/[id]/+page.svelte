@@ -51,6 +51,29 @@
 
 		callback(data!);
 	}
+
+	async function submitWriteCommentForm(this: HTMLFormElement) {
+		const form: HTMLFormElement = this;
+
+		const bodyInput = form.elements.namedItem('body') as HTMLTextAreaElement;
+
+		if (bodyInput.value.length === 0) {
+			rq.msgError('내용을 입력해주세요.');
+			bodyInput.focus();
+			return;
+		}
+
+		const { data, error } = await rq.apiEndPoints().POST('/api/v1/postComments/{postId}', {
+			params: { path: { postId: parseInt($page.params.id) } },
+			body: {
+				body: bodyInput.value
+			}
+		});
+
+		bodyInput.value = '';
+
+		rq.msgInfo(data!.msg);
+	}
 </script>
 
 {#await loadPost()}
@@ -82,6 +105,19 @@
 {:catch error}
 	{error.msg}
 {/await}
+
+<div>
+	<h1 class="font-bold text-2xl">댓글작성</h1>
+	<form action="" onsubmit={submitWriteCommentForm}>
+		<div>
+			<div>내용</div>
+			<textarea name="body"></textarea>
+		</div>
+		<div>
+			<button type="submit">작성</button>
+		</div>
+	</form>
+</div>
 
 {#await loadPostComments()}
 	<div>loading...</div>

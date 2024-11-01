@@ -90,14 +90,18 @@ public class Post extends BaseTime {
         commentsCount--;
     }
 
-    public void addComment(Member author, String body) {
-        comments.add(PostComment.builder()
+    public PostComment addComment(Member author, String body) {
+        PostComment postComment = PostComment.builder()
                 .post(this)
                 .author(author)
                 .body(body)
-                .build());
-
+                .build();
+        
+        comments.add(postComment);
+        
         increaseCommentsCount();
+        
+        return postComment;
     }
 
     public void deleteComment(PostComment postComment) {

@@ -201,4 +201,10 @@ public class PostService {
     public void deleteComment(Post post, PostComment postComment) {
         post.deleteComment(postComment);
     }
+
+    @Transactional
+    public PostComment writeComment(Member author, Post post, String body) {
+        PostComment postComment = post.addComment(author, body);
+        return postComment;
+    }
 }

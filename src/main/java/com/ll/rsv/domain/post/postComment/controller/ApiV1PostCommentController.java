@@ -9,6 +9,10 @@ import com.ll.rsv.global.exceptions.GlobalException;
 import com.ll.rsv.global.rq.Rq;
 import com.ll.rsv.global.rsData.RsData;
 import com.ll.rsv.standard.base.Empty;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,8 @@ public class ApiV1PostCommentController {
     private final Rq rq;
     private final PostService postService;
     private final PostCommentService postCommentService;
+    @PersistenceContext
+    private EntityManager entityManager;
 
 
     public record GetPostCommentsResponseBody(
@@ -70,6 +76,34 @@ public class ApiV1PostCommentController {
 
         return RsData.of(
                 "댓글이 삭제되었습니다."
+        );
+    }
+
+
+    public record WriteRequestBody(@NotBlank String body) {
+    }
+
+    public record WriteResponseBody(@NonNull PostCommentDto item) {
+    }
+
+    @PostMapping("/{postId}")
+    @Transactional
+    public RsData<WriteResponseBody> write(
+            @PathVariable long postId,
+            @Valid @RequestBody WriteRequestBody body
+    ) {
+        Post post = postService.findById(postId).orElseThrow(GlobalException.E404::new);
+
+        PostComment postComment = postService.writeComment(rq.getMember(), post, body.body);
+
+        // 이 시점에서 postComment.getId()가 null 이다.
+        // 아래 코드를 통해 postComment.getId()를 얻을 수 있다.
+        // 왜냐하면 flush()를 하면서 DB에 반영되기 때문이다.
+        entityManager.flush();
+
+        return RsData.of(
+                "댓글이 작성되었습니다.",
+                new WriteResponseBody(postCommentToDto(postComment))
         );
     }
 

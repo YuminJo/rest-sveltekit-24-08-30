@@ -53,7 +53,7 @@
 {#await load()}
 	<div>loading...</div>
 {:then { data: { item: post } }}
-	<form action="" on:submit|preventDefault={submitLoginForm}>
+	<form on:submit|preventDefault={submitLoginForm}>
 		<div>
 			<div>번호</div>
 			<div>번호 : {post.id}</div>
