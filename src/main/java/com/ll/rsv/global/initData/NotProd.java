@@ -67,10 +67,14 @@ public class NotProd {
                 post2.addLike(memberUser2);
                 post2.addLike(memberUser3);
 
-                post2.addComment(memberUser1, "댓글 11");
-                post2.addComment(memberUser1, "댓글 12");
-                post2.addComment(memberUser1, "댓글 13");
-                post2.addComment(memberUser2, "댓글 14");
+                post2.addComment(memberUser1, "# 댓글 11");
+                post2.addComment(memberUser1, "## 댓글 12");
+                post2.addComment(memberUser1, "`댓글 13`");
+                post2.addComment(memberUser2, """
+                        ```js
+                        const title = '댓글 14';
+                        ```
+                        """.stripIndent().trim());
                 post2.addComment(memberUser2, "댓글 15");
                 post2.addComment(memberUser3, "댓글 16");
 

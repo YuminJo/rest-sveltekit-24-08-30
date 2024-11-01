@@ -1,5 +1,6 @@
 package com.ll.rsv.domain.post.postComment.controller;
 
+import com.ll.rsv.domain.post.post.entity.Post;
 import com.ll.rsv.domain.post.post.service.PostService;
 import com.ll.rsv.domain.post.postComment.dto.PostCommentDto;
 import com.ll.rsv.domain.post.postComment.entity.PostComment;
@@ -7,13 +8,11 @@ import com.ll.rsv.domain.post.postComment.service.PostCommentService;
 import com.ll.rsv.global.exceptions.GlobalException;
 import com.ll.rsv.global.rq.Rq;
 import com.ll.rsv.global.rsData.RsData;
+import com.ll.rsv.standard.base.Empty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,6 +48,28 @@ public class ApiV1PostCommentController {
                 new GetPostCommentsResponseBody(
                         _items
                 )
+        );
+    }
+
+
+    @DeleteMapping("/{postId}/{postCommentId}")
+    @Transactional
+    public RsData<Empty> delete(
+            @PathVariable long postId,
+            @PathVariable long postCommentId
+    ) {
+        Post post = postService.findById(postId).orElseThrow(GlobalException.E404::new);
+
+        PostComment postComment = post.findCommentById(postCommentId)
+                .orElseThrow(GlobalException.E404::new);
+
+        if (!postCommentService.canDelete(rq.getMember(), postComment))
+            throw new GlobalException("403-1", "권한이 없습니다.");
+
+        postService.deleteComment(post, postComment);
+
+        return RsData.of(
+                "댓글이 삭제되었습니다."
         );
     }
 

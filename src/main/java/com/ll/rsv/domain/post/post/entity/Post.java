@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
@@ -100,8 +101,14 @@ public class Post extends BaseTime {
     }
 
     public void deleteComment(PostComment postComment) {
-        likes.remove(postComment);
+        comments.remove(postComment);
 
         decreaseCommentsCount();
+    }
+    
+    public Optional<PostComment> findCommentById(long postCommentId) {
+        return comments.stream()
+                .filter(it -> it.getId().equals(postCommentId))
+                .findFirst();
     }
 }
