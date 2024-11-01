@@ -63,7 +63,7 @@ public class Member extends BaseTime {
         if (this._isAdmin != null)
             return this._isAdmin;
 
-        this._isAdmin = List.of("system", "admin").contains(getUsername());
+        this._isAdmin = List.of("system", "admin", "GOOGLE_104833222367272465364").contains(getUsername());
 
         return this._isAdmin;
     }

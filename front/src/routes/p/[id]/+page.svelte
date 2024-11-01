@@ -17,6 +17,8 @@
 		return data!;
 	}
 
+	let postComments = $state<components['schemas']['PostCommentDto'][]>([]);
+
 	async function loadPostComments() {
 		if (import.meta.env.SSR) throw new Error('CSR ONLY');
 
@@ -26,6 +28,8 @@
 
 		if (error) throw error;
 
+		postComments = data!.data.items;
+
 		return data!;
 	}
 
@@ -33,6 +37,8 @@
 		postComment: components['schemas']['PostCommentDto'],
 		callback: (data: components['schemas']['RsDataEmpty']) => void
 	) {
+		if (!confirm('삭제하시겠습니까?')) return;
+
 		const { data, error } = await rq
 			.apiEndPoints()
 			.DELETE('/api/v1/postComments/{postId}/{postCommentId}', {
@@ -79,7 +85,7 @@
 
 {#await loadPostComments()}
 	<div>loading...</div>
-{:then { data: { items: postComments } }}
+{:then { }}
 	<h1 class="font-bold text-2xl">댓글</h1>
 
 	<div>
@@ -104,6 +110,7 @@
 							onclick={() =>
 								confirmAndDeletePostComment(postComment, (data) => {
 									rq.msgInfo(data.msg);
+									postComments.splice(postComments.indexOf(postComment), 1);
 								})}>삭제</button
 						>
 					{/if}
