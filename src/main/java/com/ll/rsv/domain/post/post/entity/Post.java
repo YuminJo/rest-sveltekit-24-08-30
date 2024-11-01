@@ -1,16 +1,14 @@
 package com.ll.rsv.domain.post.post.entity;
 
 import com.ll.rsv.domain.member.member.entity.Member;
+import com.ll.rsv.domain.post.postComment.entity.PostComment;
 import com.ll.rsv.domain.post.postLike.entity.PostLike;
 import com.ll.rsv.global.jpa.entity.BaseTime;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
@@ -26,9 +24,18 @@ public class Post extends BaseTime {
     @OneToMany(mappedBy = "id.post", cascade = ALL, orphanRemoval = true)
     @ToString.Exclude
     @Builder.Default
-    private Set<PostLike> likes = new HashSet<>();
+    private List<PostLike> likes = new ArrayList<>();
     @Setter(PROTECTED)
     private long likesCount;
+
+    @OneToMany(mappedBy = "post", cascade = ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @Builder.Default
+    @OrderBy("id DESC")
+    private List<PostComment> comments = new ArrayList<>();
+    @Setter(PROTECTED)
+    private long commentsCount;
+
     @ManyToOne(fetch = LAZY)
     private Member author;
     private String title;
@@ -46,27 +53,25 @@ public class Post extends BaseTime {
     }
 
     public void addLike(Member member) {
-        boolean added = likes.add(PostLike.builder()
+        likes.add(PostLike.builder()
                 .post(this)
                 .member(member)
                 .build());
 
-        if (added) increaseLikesCount();
+        increaseLikesCount();
     }
 
     public void deleteLike(Member member) {
-        boolean removed = likes.remove(
+        likes.remove(
                 PostLike.builder()
                         .post(this)
                         .member(member)
                         .build()
         );
 
-        if (removed) {
-            decreaseLikesCount();
-        }
+        decreaseLikesCount();
     }
-    
+
     public boolean hasLike(Member actor) {
         return likes.contains(
                 PostLike.builder()
@@ -74,5 +79,29 @@ public class Post extends BaseTime {
                         .member(actor)
                         .build()
         );
+    }
+
+    public void increaseCommentsCount() {
+        commentsCount++;
+    }
+
+    private void decreaseCommentsCount() {
+        commentsCount--;
+    }
+
+    public void addComment(Member author, String body) {
+        comments.add(PostComment.builder()
+                .post(this)
+                .author(author)
+                .body(body)
+                .build());
+
+        increaseCommentsCount();
+    }
+
+    public void deleteComment(PostComment postComment) {
+        likes.remove(postComment);
+
+        decreaseCommentsCount();
     }
 }

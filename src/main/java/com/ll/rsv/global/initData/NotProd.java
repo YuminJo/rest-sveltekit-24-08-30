@@ -44,15 +44,35 @@ public class NotProd {
                 memberUser4.setRefreshToken("user4");
 
                 Post post1 = postService.write(memberUser1, "제목 1", "내용 1", true);
+
                 post1.addLike(memberUser1);
                 post1.addLike(memberUser2);
                 post1.addLike(memberUser3);
                 post1.addLike(memberUser4);
 
+                post1.addComment(memberUser1, "댓글 1");
+                post1.addComment(memberUser1, "댓글 2");
+                post1.addComment(memberUser1, "댓글 3");
+                post1.addComment(memberUser1, "댓글 4");
+                post1.addComment(memberUser2, "댓글 5");
+                post1.addComment(memberUser2, "댓글 6");
+                post1.addComment(memberUser2, "댓글 7");
+                post1.addComment(memberUser3, "댓글 8");
+                post1.addComment(memberUser3, "댓글 9");
+                post1.addComment(memberUser4, "댓글 10");
+
                 Post post2 = postService.write(memberUser1, "제목 2", "내용 2", true);
+
                 post2.addLike(memberUser1);
                 post2.addLike(memberUser2);
                 post2.addLike(memberUser3);
+
+                post2.addComment(memberUser1, "댓글 11");
+                post2.addComment(memberUser1, "댓글 12");
+                post2.addComment(memberUser1, "댓글 13");
+                post2.addComment(memberUser2, "댓글 14");
+                post2.addComment(memberUser2, "댓글 15");
+                post2.addComment(memberUser3, "댓글 16");
 
                 Post post3 = postService.write(memberUser1, "제목 3", "내용 3", false);
                 post3.addLike(memberUser1);
