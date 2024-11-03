@@ -80,17 +80,17 @@ public class ApiV1PostCommentController {
     }
 
 
-    public record WriteRequestBody(@NotBlank String body) {
+    public record WriteCommentRequestBody(@NotBlank String body) {
     }
 
-    public record WriteResponseBody(@NonNull PostCommentDto item) {
+    public record WriteCommentResponseBody(@NonNull PostCommentDto item) {
     }
 
     @PostMapping("/{postId}")
     @Transactional
-    public RsData<WriteResponseBody> write(
+    public RsData<WriteCommentResponseBody> write(
             @PathVariable long postId,
-            @Valid @RequestBody WriteRequestBody body
+            @Valid @RequestBody ApiV1PostCommentController.WriteCommentRequestBody body
     ) {
         Post post = postService.findById(postId).orElseThrow(GlobalException.E404::new);
 
@@ -103,7 +103,34 @@ public class ApiV1PostCommentController {
 
         return RsData.of(
                 "댓글이 작성되었습니다.",
-                new WriteResponseBody(postCommentToDto(postComment))
+                new WriteCommentResponseBody(postCommentToDto(postComment))
+        );
+    }
+
+
+    public record EditCommentRequestBody(@NotBlank String body) {
+    }
+
+    public record EditCommentResponseBody(@NonNull PostCommentDto item) {
+    }
+
+    @PutMapping("/{postId}/{postCommentId}")
+    @Transactional
+    public RsData<EditCommentResponseBody> edit(
+            @PathVariable long postId,
+            @PathVariable long postCommentId,
+            @Valid @RequestBody ApiV1PostCommentController.EditCommentRequestBody body
+    ) {
+        Post post = postService.findById(postId).orElseThrow(GlobalException.E404::new);
+
+        PostComment postComment = post.findCommentById(postCommentId)
+                .orElseThrow(GlobalException.E404::new);
+
+        postService.editComment(post, postComment, body.body);
+
+        return RsData.of(
+                "댓글이 수정되었습니다.",
+                new EditCommentResponseBody(postCommentToDto(postComment))
         );
     }
 

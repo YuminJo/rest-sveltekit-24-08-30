@@ -207,4 +207,9 @@ public class PostService {
         PostComment postComment = post.addComment(author, body);
         return postComment;
     }
+
+    @Transactional
+    public void editComment(Post post, PostComment postComment, String body) {
+        postComment.setBody(body);
+    }
 }

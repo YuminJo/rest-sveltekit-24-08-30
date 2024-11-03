@@ -5,6 +5,10 @@
 	import { prettyDateTime } from '$lib/utils';
 	import type { components } from '$lib/types/api/v1/schema';
 
+	let toastUiEditor: any | undefined;
+
+	let writePostCommentEditorVersion = $state(0);
+
 	async function loadPost() {
 		if (import.meta.env.SSR) throw new Error('CSR ONLY');
 
@@ -52,8 +56,11 @@
 		callback(data!);
 	}
 
-	async function submitWriteCommentForm(this: HTMLFormElement) {
+	async function submitEditCommentForm(this: HTMLFormElement) {
 		const form: HTMLFormElement = this;
+
+		const idInput = form.elements.namedItem('id') as HTMLInputElement;
+		const id = parseInt(idInput.value);
 
 		const bodyInput = form.elements.namedItem('body') as HTMLTextAreaElement;
 
@@ -63,19 +70,50 @@
 			return;
 		}
 
+		const { data, error } = await rq
+			.apiEndPoints()
+			.PUT('/api/v1/postComments/{postId}/{postCommentId}', {
+				params: {
+					path: { postId: parseInt($page.params.id), postCommentId: id }
+				},
+				body: {
+					body: bodyInput.value
+				}
+			});
+
+		rq.msgInfo(data!.msg);
+
+		// postComments 맨 앞에 넣고 싶어
+		const oldPostComment = postComments.find((e) => e.id === id)!;
+		Object.assign(oldPostComment, data!.data.item);
+	}
+
+	async function submitWriteCommentForm(this: HTMLFormElement) {
+		const form: HTMLFormElement = this;
+
+		toastUiEditor.editor.setMarkdown(toastUiEditor.editor.getMarkdown().trim());
+
+		if (toastUiEditor.editor.getMarkdown().trim().length === 0) {
+			rq.msgError('내용을 입력해주세요.');
+			toastUiEditor.editor.focus();
+			return;
+		}
+
 		const { data, error } = await rq.apiEndPoints().POST('/api/v1/postComments/{postId}', {
 			params: { path: { postId: parseInt($page.params.id) } },
 			body: {
-				body: bodyInput.value
+				body: toastUiEditor.editor.getMarkdown()
 			}
 		});
 
-		bodyInput.value = '';
+		toastUiEditor.editor.setMarkdown('');
 
 		rq.msgInfo(data!.msg);
 
 		// postComments 맨 앞에 넣고 싶어
 		postComments.unshift(data!.data.item);
+
+		writePostCommentEditorVersion++;
 	}
 </script>
 
@@ -112,10 +150,12 @@
 <div>
 	<h1 class="font-bold text-2xl">댓글작성</h1>
 
-	<form on:submit|preventDefault={submitWriteCommentForm}>
+	<form onsubmit={submitWriteCommentForm}>
 		<div>
 			<div>내용</div>
-			<textarea name="body"></textarea>
+			{#key writePostCommentEditorVersion}
+				<ToastUiEditor bind:this={toastUiEditor} body={''} />
+			{/key}
 		</div>
 
 		<div>
@@ -139,25 +179,50 @@
 				<div>
 					<img src={postComment.authorProfileImgUrl} width="30" class="rounded-full" alt="" />
 				</div>
-				<div>
-					{#key postComment.id}
-						<ToastUiEditor body={postComment.body} viewer={true} />
-					{/key}
-				</div>
 
-				<div>
-					{#if postComment.actorCanDelete}
-						<button
-							onclick={() =>
-								confirmAndDeletePostComment(postComment, (data) => {
-									rq.msgInfo(data.msg);
-									postComments.splice(postComments.indexOf(postComment), 1);
-								})}>삭제</button
-						>
-					{/if}
+				{#if !postComment.editing}
+					<div>
+						{#key postComment.id}
+							<ToastUiEditor body={postComment.body} viewer={true} />
+						{/key}
+					</div>
 
-					{#if postComment.actorCanEdit}{/if}
-				</div>
+					<div>
+						{#if postComment.actorCanDelete}
+							<button
+								onclick={() =>
+									confirmAndDeletePostComment(postComment, (data) => {
+										rq.msgInfo(data.msg);
+										postComments.splice(postComments.indexOf(postComment), 1);
+									})}>삭제</button
+							>
+						{/if}
+
+						{#if postComment.actorCanEdit}
+							<button onclick={() => (postComment.editing = !postComment.editing)}>수정</button>
+						{/if}
+					</div>
+				{/if}
+
+				{#if postComment.editing}
+					<div>
+						<form onsubmit={submitEditCommentForm}>
+							<input type="hidden" name="id" value={postComment.id} />
+
+							<div>
+								<div>내용</div>
+								<textarea name="body">{postComment.body}</textarea>
+							</div>
+
+							<div>
+								<button type="submit">수정</button>
+								<button type="button" onclick={() => (postComment.editing = !postComment.editing)}
+									>수정취소</button
+								>
+							</div>
+						</form>
+					</div>
+				{/if}
 			</div>
 		{/each}
 	</div>
