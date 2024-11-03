@@ -112,7 +112,7 @@
 <div>
 	<h1 class="font-bold text-2xl">댓글작성</h1>
 
-	<form onsubmit={submitWriteCommentForm}>
+	<form on:submit|preventDefault={submitWriteCommentForm}>
 		<div>
 			<div>내용</div>
 			<textarea name="body"></textarea>
