@@ -377,6 +377,7 @@
 
 	rq.effect(() => {
 		return () => {
+			console.log('editor destroy');
 			editor.destroy();
 		};
 	});
