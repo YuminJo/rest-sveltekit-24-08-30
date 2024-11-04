@@ -1,6 +1,8 @@
 package com.ll.rsv.global.security;
 
 
+import com.ll.rsv.global.rsData.RsData;
+import com.ll.rsv.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,17 +16,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 public class ApiSecurityConfig {
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
-    @Order(2) // SecurityConfig::filterChain 보다 늦게 실행되게 하려고 추가
-    SecurityFilterChain apiFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    @Order(2)
+    SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/api/**")
                 .authorizeRequests(
                         authorizeRequests -> authorizeRequests
-                                // 글 단건조회, 조회는 인증이 필요 없음
                                 .requestMatchers(HttpMethod.GET, "/api/*/posts/{id:\\d+}", "/api/*/posts")
                                 .permitAll()
-                                // 로그인, 로그아웃도 인증이 필요 없음
                                 .requestMatchers("/api/*/members/login", "/api/*/members/logout")
                                 .permitAll()
                                 .anyRequest()
@@ -38,6 +40,20 @@ public class ApiSecurityConfig {
                         sessionManagement -> sessionManagement
                                 .sessionCreationPolicy(
                                         SessionCreationPolicy.STATELESS
+                                )
+                )
+                .exceptionHandling(
+                        exceptionHandling -> exceptionHandling
+                                .authenticationEntryPoint(
+                                        (request, response, authException) -> {
+                                            response.setContentType("application/json;charset=UTF-8");
+                                            response.setStatus(403);
+                                            response.getWriter().write(
+                                                    Ut.json.toString(
+                                                            RsData.of("403-1", request.getRequestURI() + ", " + authException.getLocalizedMessage())
+                                                    )
+                                            );
+                                        }
                                 )
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
