@@ -97,11 +97,12 @@ public class PostService {
     }
 
     public boolean canRead(Member actor, Post post) {
-        if (actor == null) return false;
         if (post == null) return false;
 
-        if (actor.isAdmin()) return true; // 관리자이면 가능
         if (post.isPublished()) return true; // 공개글이면 가능
+
+        if (actor == null) return false;
+        if (actor.isAdmin()) return true; // 관리자이면 가능
 
         return actor.equals(post.getAuthor()); // 그것도 아니라면 본인이 쓴 글이여야 함
     }
@@ -151,8 +152,6 @@ public class PostService {
         post.deleteLike(actor);
     }
 
-    // 트랜잭션 스코프 빈으로 관리되는 transactionCache 에 생성한 캐시데이터를 등록한다.
-    // 해당 캐시는 해당 트랜잭션이 끝나면 사라진다.
     public void loadLikeMap(List<Post> posts, Member member) {
         List<PostLike> likes = findLikesByPostInAndMember(posts, member);
 
@@ -182,6 +181,7 @@ public class PostService {
     @Transactional
     public RsData<Post> findTempOrMake(Member author) {
         AtomicBoolean isNew = new AtomicBoolean(false);
+
         Post post = postRepository.findTop1ByAuthorAndPublishedAndTitleOrderByIdDesc(
                 author,
                 false,
@@ -190,6 +190,7 @@ public class PostService {
             isNew.set(true);
             return write(author, "임시글", "", false);
         });
+
         return RsData.of(
                 isNew.get() ? "임시글이 생성되었습니다." : "%d번 임시글을 불러왔습니다.".formatted(post.getId()),
                 post
