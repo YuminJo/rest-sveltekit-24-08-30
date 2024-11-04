@@ -68,16 +68,16 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/postComments/{postId}": {
+    "/api/v1/postComments/{postId}/temp": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["getPosts_1"];
+        get?: never;
         put?: never;
-        post: operations["write"];
+        post: operations["makeTemp_1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -124,6 +124,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["getPosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/postComments/{postId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPosts_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -292,9 +308,6 @@ export interface components {
             data: components["schemas"]["MakeTempResponseBody"];
             success: boolean;
             fail: boolean;
-        };
-        WriteCommentRequestBody: {
-            body: string;
         };
         RsDataWriteCommentResponseBody: {
             resultCode: string;
@@ -629,7 +642,7 @@ export interface operations {
             };
         };
     };
-    getPosts_1: {
+    makeTemp_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -639,41 +652,6 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["RsDataGetPostCommentsResponseBody"];
-                };
-            };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
-                };
-            };
-        };
-    };
-    write: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                postId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["WriteCommentRequestBody"];
-            };
-        };
         responses: {
             /** @description OK */
             200: {
@@ -773,6 +751,37 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["RsDataGetPostsResponseBody"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataEmpty"];
+                };
+            };
+        };
+    };
+    getPosts_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                postId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataGetPostCommentsResponseBody"];
                 };
             };
             /** @description Internal Server Error */

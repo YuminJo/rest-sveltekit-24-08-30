@@ -44,7 +44,10 @@ public class ApiV1PostCommentController {
     ) {
         List<PostComment> items = postService.findById(postId)
                 .orElseThrow(GlobalException.E404::new)
-                .getComments();
+                .getComments()
+                .stream()
+                .filter(PostComment::isPublished)
+                .toList();
 
         List<PostCommentDto> _items = items.stream()
                 .map(this::postCommentToDto)
@@ -72,7 +75,7 @@ public class ApiV1PostCommentController {
         if (!postCommentService.canDelete(rq.getMember(), postComment))
             throw new GlobalException("403-1", "권한이 없습니다.");
 
-        postService.deleteComment(post, postComment);
+        postCommentService.delete(post, postComment);
 
         return RsData.of(
                 "댓글이 삭제되었습니다."
@@ -80,30 +83,22 @@ public class ApiV1PostCommentController {
     }
 
 
-    public record WriteCommentRequestBody(@NotBlank String body) {
-    }
-
     public record WriteCommentResponseBody(@NonNull PostCommentDto item) {
     }
 
-    @PostMapping("/{postId}")
+    @PostMapping("/{postId}/temp")
     @Transactional
-    public RsData<WriteCommentResponseBody> write(
-            @PathVariable long postId,
-            @Valid @RequestBody ApiV1PostCommentController.WriteCommentRequestBody body
+    public RsData<WriteCommentResponseBody> makeTemp(
+            @PathVariable long postId
     ) {
         Post post = postService.findById(postId).orElseThrow(GlobalException.E404::new);
 
-        PostComment postComment = postService.writeComment(rq.getMember(), post, body.body);
+        RsData<PostComment> findTempOrMakeRsData = postCommentService.findTempOrMake(rq.getMember(), post);
 
-        // 이 시점에서 postComment.getId()가 null 이다.
-        // 아래 코드를 통해 postComment.getId()를 얻을 수 있다.
-        // 왜냐하면 flush()를 하면서 DB에 반영되기 때문이다.
         entityManager.flush();
 
-        return RsData.of(
-                "댓글이 작성되었습니다.",
-                new WriteCommentResponseBody(postCommentToDto(postComment))
+        return findTempOrMakeRsData.newDataOf(
+                new WriteCommentResponseBody(postCommentToDto(findTempOrMakeRsData.getData()))
         );
     }
 
@@ -126,7 +121,7 @@ public class ApiV1PostCommentController {
         PostComment postComment = post.findCommentById(postCommentId)
                 .orElseThrow(GlobalException.E404::new);
 
-        postService.editComment(post, postComment, body.body);
+        postCommentService.edit(post, postComment, body.body);
 
         return RsData.of(
                 "댓글이 수정되었습니다.",

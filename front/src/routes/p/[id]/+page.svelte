@@ -5,10 +5,11 @@
 	import { prettyDateTime } from '$lib/utils';
 	import type { components } from '$lib/types/api/v1/schema';
 
-	const toastUiEditors: Record<number, any> = {};
-	let toastUiEditor: any | undefined;
+	const toastUiEditors = $state<Record<number, any>>({});
 
-	let writePostCommentEditorVersion = $state(0);
+	let toastUiEditor = $state<any | undefined>();
+
+	let tempPostCommentId = $state(0);
 
 	async function loadPost() {
 		if (import.meta.env.SSR) throw new Error('CSR ONLY');
@@ -91,6 +92,17 @@
 		Object.assign(oldPostComment, data!.data.item);
 	}
 
+	async function makeTempPostComment() {
+		const { data } = await rq.apiEndPoints().POST('/api/v1/postComments/{postId}/temp', {
+			params: { path: { postId: parseInt($page.params.id) } }
+		});
+
+		tempPostCommentId = data!.data.item.id;
+		setTimeout(() => {
+			toastUiEditor.editor.focus();
+		}, 100);
+	}
+
 	async function submitWriteCommentForm(this: HTMLFormElement) {
 		const form: HTMLFormElement = this;
 
@@ -102,21 +114,22 @@
 			return;
 		}
 
-		const { data, error } = await rq.apiEndPoints().POST('/api/v1/postComments/{postId}', {
-			params: { path: { postId: parseInt($page.params.id) } },
-			body: {
-				body: toastUiEditor.editor.getMarkdown()
-			}
-		});
+		const { data, error } = await rq
+			.apiEndPoints()
+			.PUT('/api/v1/postComments/{postId}/{postCommentId}', {
+				params: { path: { postId: parseInt($page.params.id), postCommentId: tempPostCommentId } },
+				body: {
+					body: toastUiEditor.editor.getMarkdown()
+				}
+			});
 
 		toastUiEditor.editor.setMarkdown('');
+		tempPostCommentId = 0;
 
 		rq.msgInfo(data!.msg);
 
 		// postComments 맨 앞에 넣고 싶어
 		postComments.unshift(data!.data.item);
-
-		writePostCommentEditorVersion++;
 	}
 </script>
 
@@ -153,17 +166,23 @@
 <div>
 	<h1 class="font-bold text-2xl">댓글작성</h1>
 
-	<form on:submit|preventDefault={submitWriteCommentForm}>
-		<div>
-			<div>내용</div>
-			{#key writePostCommentEditorVersion}
-				<ToastUiEditor bind:this={toastUiEditor} body={''} />
-			{/key}
-		</div>
+	<form onclick={submitWriteCommentForm}>
+		{#if tempPostCommentId == 0}
+			<input type="text" class="input input-bordered" onclick={() => makeTempPostComment()} />
+		{/if}
 
-		<div>
-			<button type="submit">작성</button>
-		</div>
+		{#if tempPostCommentId > 0}
+			<div>
+				<div>내용</div>
+				{#key tempPostCommentId}
+					<ToastUiEditor bind:this={toastUiEditor} body={''} />
+				{/key}
+			</div>
+
+			<div>
+				<button type="submit">작성</button>
+			</div>
+		{/if}
 	</form>
 </div>
 
@@ -209,7 +228,7 @@
 
 				{#if postComment.editing}
 					<div>
-						<form on:submit|preventDefault={submitEditCommentForm}>
+						<form onclick={submitEditCommentForm}>
 							<input type="hidden" name="id" value={postComment.id} />
 
 							<div>

@@ -91,10 +91,15 @@ public class Post extends BaseTime {
     }
 
     public PostComment addComment(Member author, String body) {
+        return addComment(author, body, true);
+    }
+
+    public PostComment addComment(Member author, String body, boolean published) {
         PostComment postComment = PostComment.builder()
                 .post(this)
                 .author(author)
                 .body(body)
+                .published(published)
                 .build();
         
         comments.add(postComment);

@@ -5,7 +5,6 @@ import com.ll.rsv.domain.post.post.entity.Post;
 import com.ll.rsv.domain.post.post.entity.PostDetail;
 import com.ll.rsv.domain.post.post.repository.PostDetailRepository;
 import com.ll.rsv.domain.post.post.repository.PostRepository;
-import com.ll.rsv.domain.post.postComment.entity.PostComment;
 import com.ll.rsv.domain.post.postLike.entity.PostLike;
 import com.ll.rsv.domain.post.postLike.repository.PostLikeRepository;
 import com.ll.rsv.global.rsData.RsData;
@@ -195,21 +194,5 @@ public class PostService {
                 isNew.get() ? "임시글이 생성되었습니다." : "%d번 임시글을 불러왔습니다.".formatted(post.getId()),
                 post
         );
-    }
-    
-    @Transactional
-    public void deleteComment(Post post, PostComment postComment) {
-        post.deleteComment(postComment);
-    }
-
-    @Transactional
-    public PostComment writeComment(Member author, Post post, String body) {
-        PostComment postComment = post.addComment(author, body);
-        return postComment;
-    }
-
-    @Transactional
-    public void editComment(Post post, PostComment postComment, String body) {
-        postComment.setBody(body);
     }
 }
