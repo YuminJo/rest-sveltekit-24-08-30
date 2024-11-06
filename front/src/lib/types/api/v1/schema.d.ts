@@ -11,9 +11,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** 글 단건조회 */
         get: operations["getPost"];
+        /** 글 편집 */
         put: operations["edit"];
         post?: never;
+        /** 글 삭제 */
         delete: operations["delete"];
         options?: never;
         head?: never;
@@ -28,8 +31,10 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
+        /** 댓글 수정 */
         put: operations["edit_1"];
         post?: never;
+        /** 댓글 삭제 */
         delete: operations["delete_1"];
         options?: never;
         head?: never;
@@ -45,6 +50,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** 글 추천 */
         post: operations["like"];
         delete?: never;
         options?: never;
@@ -61,6 +67,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** 임시 글 생성 */
         post: operations["makeTemp"];
         delete?: never;
         options?: never;
@@ -77,6 +84,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** 임시 댓글 생성 */
         post: operations["makeTemp_1"];
         delete?: never;
         options?: never;
@@ -93,6 +101,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** 로그아웃 */
         post: operations["logout"];
         delete?: never;
         options?: never;
@@ -109,6 +118,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** 로그인, accessToken, refreshToken 쿠키 생성됨 */
         post: operations["login"];
         delete?: never;
         options?: never;
@@ -123,6 +133,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** 글 다건조회 */
         get: operations["getPosts"];
         put?: never;
         post?: never;
@@ -139,6 +150,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** 댓글 다건조회 */
         get: operations["getPosts_1"];
         put?: never;
         post?: never;
@@ -155,6 +167,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** 내 정보 */
         get: operations["getMe"];
         put?: never;
         post?: never;
@@ -174,6 +187,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** 글 추천취소 */
         delete: operations["cancelLike"];
         options?: never;
         head?: never;
@@ -191,8 +205,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["Empty"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         EditRequestBody: {
             title: string;
@@ -230,8 +244,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["EditResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         EditCommentRequestBody: {
             body: string;
@@ -261,8 +275,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["EditCommentResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         LikeResponseBody: {
             item: components["schemas"]["PostDto"];
@@ -294,8 +308,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["LikeResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         MakeTempResponseBody: {
             item: components["schemas"]["PostDto"];
@@ -306,8 +320,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["MakeTempResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         RsDataWriteCommentResponseBody: {
             resultCode: string;
@@ -315,8 +329,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["WriteCommentResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         WriteCommentResponseBody: {
             item: components["schemas"]["PostCommentDto"];
@@ -345,8 +359,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["LoginResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         GetPostsResponseBody: {
             items: components["schemas"]["PostDto"][];
@@ -357,8 +371,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["GetPostsResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         GetPostResponseBody: {
             item: components["schemas"]["PostWithBodyDto"];
@@ -369,8 +383,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["GetPostResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         GetPostCommentsResponseBody: {
             items: components["schemas"]["PostCommentDto"][];
@@ -381,8 +395,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["GetPostCommentsResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         MeResponseBody: {
             item: components["schemas"]["MemberDto"];
@@ -393,8 +407,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["MeResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
         CancelLikeResponseBody: {
             item: components["schemas"]["PostDto"];
@@ -405,8 +419,8 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["CancelLikeResponseBody"];
-            success: boolean;
             fail: boolean;
+            success: boolean;
         };
     };
     responses: never;
@@ -434,16 +448,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataGetPostResponseBody"];
+                    "application/json": components["schemas"]["RsDataGetPostResponseBody"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -469,16 +483,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEditResponseBody"];
+                    "application/json": components["schemas"]["RsDataEditResponseBody"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -500,16 +514,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -536,16 +550,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEditCommentResponseBody"];
+                    "application/json": components["schemas"]["RsDataEditCommentResponseBody"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -568,16 +582,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -599,16 +613,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataLikeResponseBody"];
+                    "application/json": components["schemas"]["RsDataLikeResponseBody"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -628,16 +642,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataMakeTempResponseBody"];
+                    "application/json": components["schemas"]["RsDataMakeTempResponseBody"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -659,16 +673,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataWriteCommentResponseBody"];
+                    "application/json": components["schemas"]["RsDataWriteCommentResponseBody"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -688,16 +702,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -721,16 +735,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataLoginResponseBody"];
+                    "application/json": components["schemas"]["RsDataLoginResponseBody"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -750,16 +764,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataGetPostsResponseBody"];
+                    "application/json": components["schemas"]["RsDataGetPostsResponseBody"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -781,16 +795,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataGetPostCommentsResponseBody"];
+                    "application/json": components["schemas"]["RsDataGetPostCommentsResponseBody"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -810,16 +824,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataMeResponseBody"];
+                    "application/json": components["schemas"]["RsDataMeResponseBody"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };
@@ -841,16 +855,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataCancelLikeResponseBody"];
+                    "application/json": components["schemas"]["RsDataCancelLikeResponseBody"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
+                    "application/json": components["schemas"]["RsDataEmpty"];
                 };
             };
         };

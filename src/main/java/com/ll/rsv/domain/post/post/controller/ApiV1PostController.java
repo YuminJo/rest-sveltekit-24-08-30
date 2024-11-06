@@ -8,6 +8,9 @@ import com.ll.rsv.global.exceptions.GlobalException;
 import com.ll.rsv.global.rq.Rq;
 import com.ll.rsv.global.rsData.RsData;
 import com.ll.rsv.standard.base.Empty;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,8 +22,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+
 @RestController
-@RequestMapping("/api/v1/posts")
+@RequestMapping(value = "/api/v1/posts", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+@Tag(name = "ApiV1PostController", description = "글 CRUD 컨트롤러")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ApiV1PostController {
@@ -32,7 +41,8 @@ public class ApiV1PostController {
     }
 
     @Transactional
-    @PostMapping("/temp")
+    @PostMapping(value = "/temp", consumes = ALL_VALUE)
+    @Operation(summary = "임시 글 생성")
     public RsData<MakeTempResponseBody> makeTemp() {
         RsData<Post> findTempOrMakeRsData = postService.findTempOrMake(rq.getMember());
 
@@ -47,18 +57,17 @@ public class ApiV1PostController {
     public record GetPostsResponseBody(@NonNull List<PostDto> items) {
     }
 
-    @GetMapping("")
+    @GetMapping(value = "", consumes = ALL_VALUE)
+    @Operation(summary = "글 다건조회")
     public RsData<GetPostsResponseBody> getPosts() {
         List<Post> items = postService.findByPublished(true);
 
         if (rq.isLogin()) {
-            // 로그인 했다면 먼저 해당 회원이 각 글들에 대해서 추천을 했는지를 true, false 형태로 정리한 맵을 먼저 만들고 캐시에 등록한다.
-            // 이 작업을 안해도 아래기능이 실행되기는 하지만 각 글들을의 모든 추천정보를 전부다 가져오는 쿼리가 실행되어 버린다.
             postService.loadLikeMap(items, rq.getMember());
         }
 
         List<PostDto> _items = items.stream()
-                .map(this::postToDto)// 이 작업에서 캐시가 없었다면, 추가 쿼리가 발생한다.
+                .map(this::postToDto)
                 .collect(Collectors.toList());
 
         return RsData.of(
@@ -68,13 +77,12 @@ public class ApiV1PostController {
         );
     }
 
-    
-    // 위에 2줄을 띄워서 각 요청별 코드를 보기쉽게 나눠줌, 단건 조회 시작
-    // 레코드 도입하여 요청Body 클래스 단순화
+
     public record GetPostResponseBody(@NonNull PostWithBodyDto item) {
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", consumes = ALL_VALUE)
+    @Operation(summary = "글 단건조회")
     public RsData<GetPostResponseBody> getPost(
             @PathVariable long id
     ) {
@@ -89,19 +97,16 @@ public class ApiV1PostController {
                 new GetPostResponseBody(dto)
         );
     }
-    // 아래에 2줄을 띄워서 각 요청별 코드를 보기쉽게 나눠줌, 단건 조회 끝
 
 
-    // 위에 2줄을 띄워서 각 요청별 코드를 보기쉽게 나눠줌, 글 수정 시작
-    // 레코드 도입하여 요청Body 클래스 단순화
     public record EditRequestBody(@NotBlank String title, @NotBlank String body, @NotNull boolean published) {
     }
-    
-    // 레코드 도입하여 응답Body 클래스 단순화
+
     public record EditResponseBody(@NonNull PostWithBodyDto item) {
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping("/{id}")
+    @Operation(summary = "글 편집")
     @Transactional
     public RsData<EditResponseBody> edit(
             @PathVariable long id,
@@ -114,15 +119,15 @@ public class ApiV1PostController {
 
         postService.edit(post, requestBody.title, requestBody.body, requestBody.published);
 
-        // public static <T> RsData<T> of(T data) { ... } 를 RsData 에 추가한 덕분에 아래와 같이 깔끔하게 변경됨
         return RsData.of(
                 "%d번 글이 수정되었습니다.".formatted(id),
-                new EditResponseBody(new PostWithBodyDto(post))
+                new EditResponseBody(postToWithBodyDto(post))
         );
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}", consumes = ALL_VALUE)
+    @Operation(summary = "글 삭제")
     @Transactional
     public RsData<Empty> delete(
             @PathVariable long id
@@ -143,8 +148,9 @@ public class ApiV1PostController {
     public record LikeResponseBody(@NonNull PostDto item) {
     }
 
-    @PostMapping(value = "/{id}/like")
+    @PostMapping(value = "/{id}/like", consumes = ALL_VALUE)
     @Transactional
+    @Operation(summary = "글 추천")
     public RsData<LikeResponseBody> like(
             @PathVariable long id
     ) {
@@ -167,7 +173,8 @@ public class ApiV1PostController {
     public record CancelLikeResponseBody(@NonNull PostDto item) {
     }
 
-    @DeleteMapping(value = "/{id}/cancelLike")
+    @DeleteMapping(value = "/{id}/cancelLike", consumes = ALL_VALUE)
+    @Operation(summary = "글 추천취소")
     @Transactional
     public RsData<CancelLikeResponseBody> cancelLike(
             @PathVariable long id

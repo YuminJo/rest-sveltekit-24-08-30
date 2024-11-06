@@ -13,8 +13,31 @@ import java.io.IOException;
 @Configuration
 @RequiredArgsConstructor
 public class AppConfig {
+    private static String activeProfile;
+
+    @Value("${spring.profiles.active}")
+    public void setActiveProfile(String activeProfile) {
+        this.activeProfile = activeProfile;
+    }
+
+    public static boolean isProd() {
+        return activeProfile.equals("prod");
+    }
+
+    public static boolean isDev() {
+        return activeProfile.equals("dev");
+    }
+
+    public static boolean isTest() {
+        return activeProfile.equals("Test");
+    }
+
+    public static boolean isNotProd() {
+        return !isProd();
+    }
+
     @Getter
-    public static String jwtSecretKey;
+    private static String jwtSecretKey;
 
     @Value("${custom.jwt.secretKey}")
     public void setJwtSecretKey(String jwtSecretKey) {

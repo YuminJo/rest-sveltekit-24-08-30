@@ -9,6 +9,9 @@ import com.ll.rsv.global.exceptions.GlobalException;
 import com.ll.rsv.global.rq.Rq;
 import com.ll.rsv.global.rsData.RsData;
 import com.ll.rsv.standard.base.Empty;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.Valid;
@@ -21,8 +24,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
-@RequestMapping("/api/v1/postComments")
+@RequestMapping(value = "/api/v1/postComments", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+@Tag(name = "ApiV1PostCommentController", description = "댓글 CRUD 컨트롤러")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ApiV1PostCommentController {
@@ -38,7 +46,8 @@ public class ApiV1PostCommentController {
     ) {
     }
 
-    @GetMapping("/{postId}")
+    @GetMapping(value = "/{postId}", consumes = ALL_VALUE)
+    @Operation(summary = "댓글 다건조회")
     public RsData<GetPostCommentsResponseBody> getPosts(
             @PathVariable long postId
     ) {
@@ -61,7 +70,8 @@ public class ApiV1PostCommentController {
     }
 
 
-    @DeleteMapping("/{postId}/{postCommentId}")
+    @DeleteMapping(value = "/{postId}/{postCommentId}", consumes = ALL_VALUE)
+    @Operation(summary = "댓글 삭제")
     @Transactional
     public RsData<Empty> delete(
             @PathVariable long postId,
@@ -86,7 +96,8 @@ public class ApiV1PostCommentController {
     public record WriteCommentResponseBody(@NonNull PostCommentDto item) {
     }
 
-    @PostMapping("/{postId}/temp")
+    @PostMapping(value = "/{postId}/temp", consumes = ALL_VALUE)
+    @Operation(summary = "임시 댓글 생성")
     @Transactional
     public RsData<WriteCommentResponseBody> makeTemp(
             @PathVariable long postId
@@ -110,6 +121,7 @@ public class ApiV1PostCommentController {
     }
 
     @PutMapping("/{postId}/{postCommentId}")
+    @Operation(summary = "댓글 수정")
     @Transactional
     public RsData<EditCommentResponseBody> edit(
             @PathVariable long postId,

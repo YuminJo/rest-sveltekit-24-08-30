@@ -27,14 +27,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (List.of("/api/v1/members/login", "/api/v1/members/join").contains(request.getRequestURI())) {
+        if (List.of("/api/v1/members/login", "/api/v1/members/join", "/api/v1/members/logout").contains(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String bearerToken = rq.getHeader("Authorization", null);
 
-        if (bearerToken != null) {
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             // 토큰이 헤더로 들어온 경우
             String tokensStr = bearerToken.substring("Bearer ".length());
             String[] tokens = tokensStr.split(" ", 2);
