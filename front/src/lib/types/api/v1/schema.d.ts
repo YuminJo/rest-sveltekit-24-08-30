@@ -23,6 +23,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/posts/{id}/body": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** 글 본문 편집 */
+        put: operations["editBody"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/postComments/{postId}/{postCommentId}": {
         parameters: {
             query?: never;
@@ -246,6 +263,9 @@ export interface components {
             data: components["schemas"]["EditResponseBody"];
             success: boolean;
             fail: boolean;
+        };
+        EditBodyRequestBody: {
+            body: string;
         };
         EditCommentRequestBody: {
             body: string;
@@ -518,6 +538,41 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RsDataEmpty"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RsDataEmpty"];
+                };
+            };
+        };
+    };
+    editBody: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditBodyRequestBody"];
+            };
+        };
         responses: {
             /** @description OK */
             200: {

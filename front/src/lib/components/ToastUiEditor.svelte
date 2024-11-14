@@ -14,8 +14,9 @@
 	const {
 		body,
 		viewer = false,
-		height = '300px'
-	} = $props<{ body: string; viewer?: boolean; height?: string }>();
+		height = '300px',
+		saveBody
+	} = $props<{ body: string; viewer?: boolean; height?: string; saveBody?: Function }>();
 
 	let div: HTMLDivElement | undefined = $state();
 	let editor: any;
@@ -337,6 +338,13 @@
 				});
 
 		editor.addCommand &&
+			editor.addCommand('markdown', 'saveBody', () => {
+				if (saveBody) saveBody();
+
+				return true;
+			});
+
+		editor.addCommand &&
 			editor.addCommand('markdown', 'toggleFullScreen', () => {
 				toggleFullScreen();
 				return true;
@@ -357,6 +365,18 @@
 					className: '!text-[20px]',
 					text: 'F',
 					command: 'toggleFullScreen'
+				}
+			);
+
+		editor.insertToolbarItem &&
+			editor.insertToolbarItem(
+				{ groupIndex: 0, itemIndex: 0 },
+				{
+					name: 'saveBody',
+					tooltip: '본문을 저장합니다.',
+					className: '!text-[20px]',
+					text: 'S',
+					command: 'saveBody'
 				}
 			);
 

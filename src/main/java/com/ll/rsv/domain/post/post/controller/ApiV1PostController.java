@@ -139,6 +139,30 @@ public class ApiV1PostController {
     }
 
 
+    public record EditBodyRequestBody(@NotBlank String body) {
+    }
+
+
+    @PutMapping("/{id}/body")
+    @Operation(summary = "글 본문 편집")
+    @Transactional
+    public RsData<Empty> editBody(
+            @PathVariable long id,
+            @Valid @RequestBody EditBodyRequestBody requestBody
+    ) {
+        Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        if (!postService.canEdit(rq.getMember(), post))
+            throw new GlobalException("403-1", "권한이 없습니다.");
+
+        postService.editBody(post, requestBody.body);
+
+        return RsData.of(
+                "성공"
+        );
+    }
+
+
     @DeleteMapping(value = "/{id}", consumes = ALL_VALUE)
     @Operation(summary = "글 삭제")
     @Transactional

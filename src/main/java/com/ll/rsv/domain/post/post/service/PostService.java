@@ -96,7 +96,7 @@ public class PostService {
         post.setTitle(title);
         post.setPublished(published);
 
-        saveBody(post, body);
+        editBody(post, body);
     }
 
     public boolean canRead(Member actor, Post post) {
@@ -202,5 +202,10 @@ public class PostService {
 
     public Page<Post> findByKw(KwTypeV1 kwType, String kw, Member author, Boolean published, Pageable pageable) {
         return postRepository.findByKw(kwType, kw, author, published, pageable);
+    }
+
+    @Transactional
+    public void editBody(Post post, String body) {
+        saveBody(post, body);
     }
 }
