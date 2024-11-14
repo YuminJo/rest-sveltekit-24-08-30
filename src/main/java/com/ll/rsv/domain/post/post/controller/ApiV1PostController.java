@@ -4,10 +4,13 @@ import com.ll.rsv.domain.post.post.dto.PostDto;
 import com.ll.rsv.domain.post.post.dto.PostWithBodyDto;
 import com.ll.rsv.domain.post.post.entity.Post;
 import com.ll.rsv.domain.post.post.service.PostService;
+import com.ll.rsv.global.app.AppConfig;
 import com.ll.rsv.global.exceptions.GlobalException;
 import com.ll.rsv.global.rq.Rq;
 import com.ll.rsv.global.rsData.RsData;
 import com.ll.rsv.standard.base.Empty;
+import com.ll.rsv.standard.base.KwTypeV1;
+import com.ll.rsv.standard.base.PageDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,12 +18,16 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -54,25 +61,31 @@ public class ApiV1PostController {
     }
 
 
-    public record GetPostsResponseBody(@NonNull List<PostDto> items) {
+    public record GetPostsResponseBody(@NonNull PageDto<PostDto> itemPage) {
     }
 
     @GetMapping(value = "", consumes = ALL_VALUE)
     @Operation(summary = "글 다건조회")
-    public RsData<GetPostsResponseBody> getPosts() {
-        List<Post> items = postService.findByPublished(true);
+    public RsData<GetPostsResponseBody> getPosts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String kw,
+            @RequestParam(defaultValue = "ALL") KwTypeV1 kwType
+    ) {
+
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("id"));
+        Pageable pageable = PageRequest.of(page - 1, AppConfig.getBasePageSize(), Sort.by(sorts));
+        Page<Post> itemPage = postService.findByKw(kwType, kw, null, true, pageable);
 
         if (rq.isLogin()) {
-            postService.loadLikeMap(items, rq.getMember());
+            postService.loadLikeMap(itemPage.getContent(), rq.getMember());
         }
 
-        List<PostDto> _items = items.stream()
-                .map(this::postToDto)
-                .collect(Collectors.toList());
+        Page<PostDto> _itemPage = itemPage.map(this::postToDto);
 
         return RsData.of(
                 new GetPostsResponseBody(
-                        _items
+                        new PageDto<>(_itemPage)
                 )
         );
     }

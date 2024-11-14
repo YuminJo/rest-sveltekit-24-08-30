@@ -42,6 +42,7 @@ public class NotProd {
 
                 Member memberUser4 = memberService.join("user4", "1234").getData();
                 memberUser4.setRefreshToken("user4");
+                //편하게 하기 위해 refreshToken 고정
 
                 Post post1 = postService.write(memberUser1, "제목 1", "내용 1", true);
 
