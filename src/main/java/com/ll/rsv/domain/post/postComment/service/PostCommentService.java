@@ -53,7 +53,8 @@ public class PostCommentService {
     public RsData<PostComment> findTempOrMake(Member author, Post post) {
         AtomicBoolean isNew = new AtomicBoolean(false);
 
-        PostComment postComment = postCommentRepository.findTop1ByAuthorAndPublishedAndBodyOrderByIdDesc(
+        PostComment postComment = postCommentRepository.findTop1ByPostAndAuthorAndPublishedAndBodyOrderByIdDesc(
+                post,
                 author,
                 false,
                 ""

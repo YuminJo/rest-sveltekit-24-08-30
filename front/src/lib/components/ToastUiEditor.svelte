@@ -16,26 +16,48 @@
 		viewer = false,
 		height = '300px',
 		saveBody
-	} = $props<{ body: string; viewer?: boolean; height?: string; saveBody?: Function }>();
+	} = $props<{
+		body: string;
+		viewer?: boolean;
+		height?: string;
+		saveBody?: Function;
+	}>();
 
-	let div: HTMLDivElement | undefined = $state();
+	let editorDivWrap: HTMLDivElement | undefined = $state();
+	let editorDiv: HTMLDivElement | undefined = $state();
 	let editor: any;
 
+	let isFullScreen = false;
+
 	function toggleFullScreen() {
+		if (!editorDivWrap || !editorDiv) return;
+
+		if (viewer && window.document.body.classList.contains('fullscreen-editor')) return;
+		if (!viewer && window.document.body.classList.contains('fullscreen-viewer')) return;
+
+		isFullScreen = !isFullScreen;
+		window.document.body.classList.toggle('fullscreen-mode');
+
+		if (viewer) window.document.body.classList.toggle('fullscreen-viewer');
+		else window.document.body.classList.toggle('fullscreen-editor');
+
 		window.document.body.classList.toggle('overflow-hidden');
 
-		if (div) {
-			div.classList.toggle('fixed');
-			div.classList.toggle('top-0');
-			div.classList.toggle('left-0');
-			div.classList.toggle('w-full');
-			div.classList.toggle('!h-[100dvh]');
-			div.classList.toggle('bg-white');
-		}
+		editorDivWrap.classList.toggle('fixed');
+		editorDivWrap.classList.toggle('top-0');
+		editorDivWrap.classList.toggle('left-0');
+		editorDivWrap.classList.toggle('w-full');
+		editorDivWrap.classList.toggle('!h-[100dvh]');
+		if (!viewer) editorDiv.classList.toggle('!h-[100%]');
+		editorDivWrap.classList.toggle('overflow-y-scroll');
+		editorDivWrap.classList.toggle('bg-white');
+		editorDivWrap.classList.toggle('z-10');
+
+		if (viewer) editorDivWrap.classList.toggle('p-2');
 	}
 
 	function switchTab() {
-		div!
+		editorDiv!
 			.querySelectorAll('.toastui-editor-tabs > .tab-item:not(.active)')
 			.forEach((element: Element): void => {
 				// 각 요소에 대해 클릭 이벤트를 발생시킴
@@ -287,12 +309,12 @@
 
 		editor = viewer
 			? Editor.factory({
-					el: div,
+					el: editorDiv,
 					viewer,
 					...editorConfig
 				})
 			: new Editor({
-					el: div,
+					el: editorDiv,
 					height,
 					initialEditType: 'markdown',
 					previewStyle: 'tab',
@@ -303,7 +325,10 @@
 								if (event.ctrlKey && event.shiftKey && (event.key == 'z' || event.key == 'Z')) {
 									// 윈도우 : Ctrl + Shift + z 를 누르면 redo
 									editor.exec('redo');
-									return false;
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
 								} else if (
 									event.metaKey &&
 									event.shiftKey &&
@@ -311,23 +336,78 @@
 								) {
 									// MAC : Cmd + Shift + z 를 누르면 redo
 									editor.exec('redo');
-									return false;
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
 								} else if (event.ctrlKey && event.key == 'y') {
 									// 윈도우 : Ctrl + y 를 누르면 redo
 									editor.exec('redo');
-									return false;
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
 								} else if (event.metaKey && event.key == 'y') {
 									// MAC : Cmd + y 를 누르면 redo
 									editor.exec('redo');
-									return false;
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
 								} else if (event.ctrlKey && event.key == 'z') {
 									// 윈도우 : Ctrl + z 를 누르면 undo
 									editor.exec('undo');
-									return false;
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
 								} else if (event.metaKey && event.key == 'z') {
 									// MAC : Cmd + z 를 누르면 undo
 									editor.exec('undo');
-									return false;
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
+								} else if (event.ctrlKey && event.key == 'q') {
+									// 윈도우 : Ctrl + q 를 누르면 toggleFullScreen
+									editor.exec('toggleFullScreen');
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
+								} else if (event.metaKey && event.key == 'q') {
+									// MAC : Cmd + q 를 누르면 toggleFullScreen
+									editor.exec('toggleFullScreen');
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
+								} else if (event.ctrlKey && event.key == 's') {
+									// 윈도우 : Ctrl + s 를 누르면 saveBody
+									editor.exec('saveBody');
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
+								} else if (event.metaKey && event.key == 's') {
+									// MAC : Cmd + s 를 누르면 saveBody
+									editor.exec('saveBody');
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
+								} else if (event.ctrlKey && event.key == 'd') {
+									// 윈도우 : Ctrl + d 를 누르면
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
+								} else if (event.metaKey && event.key == 'd') {
+									// MAC : Cmd + d 를 누르면
+
+									event.stopPropagation();
+									event.preventDefault();
+									return;
 								}
 							}
 						}
@@ -337,9 +417,10 @@
 					...editorConfig
 				});
 
-		editor.addCommand &&
+		saveBody &&
+			editor.addCommand &&
 			editor.addCommand('markdown', 'saveBody', () => {
-				if (saveBody) saveBody();
+				saveBody();
 
 				return true;
 			});
@@ -352,7 +433,7 @@
 
 		editor.addCommand &&
 			editor.addCommand('markdown', 'openImageUploader', () => {
-				window.open('http://onpaste.com/');
+				window.open('https://postimages.org');
 				return true;
 			});
 
@@ -360,20 +441,21 @@
 			editor.insertToolbarItem(
 				{ groupIndex: 0, itemIndex: 0 },
 				{
-					name: 'fullscreen',
-					tooltip: '풀스크린모드를 해제/설정합니다.',
+					name: 'toggleFullScreen',
+					tooltip: '풀스크린(Ctrl + q, Cmd + q)',
 					className: '!text-[20px]',
 					text: 'F',
 					command: 'toggleFullScreen'
 				}
 			);
 
-		editor.insertToolbarItem &&
+		saveBody &&
+			editor.insertToolbarItem &&
 			editor.insertToolbarItem(
 				{ groupIndex: 0, itemIndex: 0 },
 				{
 					name: 'saveBody',
-					tooltip: '본문을 저장합니다.',
+					tooltip: '저장(Ctrl + s, Cmd + s)',
 					className: '!text-[20px]',
 					text: 'S',
 					command: 'saveBody'
@@ -387,7 +469,7 @@
 				{
 					name: 'img',
 					tooltip:
-						'이미지를 드래그 앤 드롭하세요. 혹은 붙여넣기하세요. 마지막에 I 버튼 눌러서 URL 생성하세요.',
+						'이미지 업로드 후 생성된 URL 을 `![](Img Direct link)` 형식으로 에디터에 입력하시면 됩니다.',
 					className: 'toastui-editor-toolbar-icons',
 					style: { backgroundPosition: '-309px 3px' },
 					command: 'openImageUploader'
@@ -397,12 +479,17 @@
 
 	rq.effect(() => {
 		return () => {
-			console.log('editor destroy');
+			if (isFullScreen) toggleFullScreen();
+
 			editor.destroy();
 		};
 	});
 
-	export { editor, switchTab };
+	export { editor, switchTab, toggleFullScreen, viewer, isFullScreen };
 </script>
 
-<div bind:this={div}></div>
+<div bind:this={editorDivWrap}>
+	<slot name="beforeContent" />
+	<div bind:this={editorDiv}></div>
+	<slot name="afterContent" />
+</div>

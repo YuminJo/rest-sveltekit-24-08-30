@@ -26,6 +26,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -158,7 +159,38 @@ public class ApiV1PostController {
         postService.editBody(post, requestBody.body);
 
         return RsData.of(
-                "성공"
+                "저장"
+        );
+    }
+
+
+    public record GetPostBodyResponseBody(
+            @NotNull LocalDateTime modifyDate,
+            @NotNull String body
+    ) {
+    }
+
+    @GetMapping(value = "/{id}/body", consumes = ALL_VALUE)
+    @Operation(summary = "글(본문) 단건조회")
+    @Transactional
+    public RsData<GetPostBodyResponseBody> getPostBody(
+            @PathVariable long id,
+            @RequestParam LocalDateTime lastModifyDate
+    ) {
+        Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        if (!postService.canRead(rq.getMember(), post))
+            throw new GlobalException("403-1", "권한이 없습니다.");
+
+        if (post.getModifyDate().isBefore(lastModifyDate) || post.getModifyDate().equals(lastModifyDate))
+            throw new GlobalException("400-1", "변경사항이 없습니다.");
+
+        return RsData.of(
+                "새 본문을 불러옵니다.",
+                new GetPostBodyResponseBody(
+                        post.getModifyDate(),
+                        post.getDetailBody().getVal()
+                )
         );
     }
 

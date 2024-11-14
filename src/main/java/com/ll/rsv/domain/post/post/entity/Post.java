@@ -7,6 +7,7 @@ import com.ll.rsv.global.jpa.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -119,5 +120,9 @@ public class Post extends BaseTime {
         return comments.stream()
                 .filter(it -> it.getId().equals(postCommentId))
                 .findFirst();
+    }
+
+    public void setModified() {
+        setModifyDate(LocalDateTime.now());
     }
 }

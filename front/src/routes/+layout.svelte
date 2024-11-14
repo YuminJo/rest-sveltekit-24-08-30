@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 
-	import '$lib/app.css';
+	import '$lib/app.pcss';
 
 	import rq from '$lib/rq/rq.svelte';
 

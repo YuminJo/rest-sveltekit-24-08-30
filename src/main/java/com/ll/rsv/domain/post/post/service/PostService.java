@@ -62,6 +62,11 @@ public class PostService {
             post.setDetailBody(detailBody);
         }
 
+        if (body.equals(detailBody.getVal())) return;
+        if (!post.isNew()) {
+            post.setModified();
+        }
+
         detailBody.setVal(body);
     }
 

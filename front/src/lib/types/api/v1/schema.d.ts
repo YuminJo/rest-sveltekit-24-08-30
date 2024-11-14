@@ -30,7 +30,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** 글(본문) 단건조회 */
+        get: operations["getPostBody"];
         /** 글 본문 편집 */
         put: operations["editBody"];
         post?: never;
@@ -417,6 +418,20 @@ export interface components {
             success: boolean;
             fail: boolean;
         };
+        GetPostBodyResponseBody: {
+            /** Format: date-time */
+            modifyDate: string;
+            body: string;
+        };
+        RsDataGetPostBodyResponseBody: {
+            resultCode: string;
+            /** Format: int32 */
+            statusCode: number;
+            msg: string;
+            data: components["schemas"]["GetPostBodyResponseBody"];
+            success: boolean;
+            fail: boolean;
+        };
         GetPostCommentsResponseBody: {
             items: components["schemas"]["PostCommentDto"][];
         };
@@ -546,6 +561,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RsDataEmpty"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RsDataEmpty"];
+                };
+            };
+        };
+    };
+    getPostBody: {
+        parameters: {
+            query: {
+                lastModifyDate: string;
+            };
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RsDataGetPostBodyResponseBody"];
                 };
             };
             /** @description Bad Request */
